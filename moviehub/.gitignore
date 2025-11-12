@@ -1,0 +1,28 @@
+# IDE file
+.idea/
+
+# virtualenv
+.venv/
+
+__pycache__/
+*.pyc
+
+# database
+db.sqlite3
+
+# .env security file
+.env
+# env anywhere
+**/.env
+
+# user file
+/media/
+
+# prod. static. (collectstatic)
+/staticfiles/
+
+# os cache/mac
+.DS_Store
+
+# os cache/win
+Thumbs.db
