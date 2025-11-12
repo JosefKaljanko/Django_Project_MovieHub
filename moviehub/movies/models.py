@@ -1,3 +1,89 @@
 from django.db import models
+from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 
-# Create your models here.
+
+
+class Genre(models.Model):
+    """
+    Model žánru filmu(akce, drama, komedie,...)
+    """
+    name = models.CharField(max_length=70)
+    slug = models.SlugField(unique=True, blank=True, max_length=100, db_index=True)
+
+    def clean(self):
+        """pokud není slug - vygeneruje"""
+        if not self.slug and self.name:
+            self.slug = slugify(self.name)
+        """duplicity control"""
+        if self.slug and Genre.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+            raise ValidationError({"slug": f"Slug: '{self.slug}' already exists"})
+
+
+    def save(self, *args, **kwargs):
+        # """pokud neni slug > vygenerujeme si ho"""
+        # if not self.slug:
+        #     self.slug = slugify(self.name)
+        #
+        #
+        # if Genre.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+        #     raise ValidationError(f"Slug '{self.slug}' exists! Can't create duplicity genre")
+        """field validation + clean()"""
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = "Žánr"
+        verbose_name_plural = "Žánry"
+
+
+
+class Actor(models.Model):
+    """
+    Model herců
+    """
+    name = models.CharField(max_length=30)
+    surname = models.CharField(max_length=30)
+    bio = models.TextField(blank=True) # blank znamená ze pole nemusi byt vyplneno
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["surname", "name"]
+        verbose_name = "Herec"
+        verbose_name_plural = "Herci"
+
+class Movie(models.Model):
+    """Model filmu"""
+    # objects = None
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    release_date = models.DateField()
+    slug = models.SlugField(unique=True, blank=True, max_length=125, db_index=True)
+    genres = models.ManyToManyField(Genre, related_name="movies")
+    actors = models.ManyToManyField(Actor,related_name="movies")
+
+    def clean(self):
+        """není slug - vygeneruje"""
+        if not self.slug and self.title:
+            self.slug = slugify(self.title)
+
+        if self.slug and Movie.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+            raise ValidationError({"slug": f"Slug: '{self.slug}' already exists"})
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.title} - {self.release_date::%d-%m-%Y}"
+
+    class Meta:
+        ordering = ["-release_date", "title"]
+        verbose_name = "Film"
+        verbose_name_plural = "Filmy"
