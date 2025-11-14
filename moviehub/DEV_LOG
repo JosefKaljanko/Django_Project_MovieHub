@@ -1,0 +1,27 @@
+APP/MOVIES
+    → TEMPLATES!!
+    → ALL MOVIES   =    ZAKLAD                                      OK
+    → DETAIL VIEWS = NOT FUNCTIONAL  !!
+    → rozchodit - movies views a fukcionalitu!!
+                - detail views
+
+    movie_detail.html:
+        → formulář dodelat, zatím 405
+
+    → udelat stranku pro pridavani filmů GROUP & PERMISION
+
+
+APP/ACCOUNTS
+    → Login/Logout/Register           → nejak                        OK
+    → FORM REG/LOG                    → JEDE                         OK
+    → LOGIKA HTML {% if user auth..... Login | Reg.  ||  Logout →    OK
+
+    → DODELAT Logiku upravy profilu!!! redirect a user.save()
+
+APP/REVIEWS
+    → ADD Reviews = FORM na pridaní recenze  → Form Hotovy           OK
+    → Funkcionalita pridavaní recenzí
+
+
+    add_review.html:
+        → DODELAT AVERAGE FILMU!!!

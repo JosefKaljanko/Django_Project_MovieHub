@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+	Add Review
+{% endblock %}
+
+{% block content %}
+    <h1>Movie detail:</h1>
+    <ul>
+    <li>Title: {{ movie.title }}</li>
+    <li>Year: {{ movie.release_date }}</li>
+    <li>Genre:
+    {% for genre in movie.genres.all %}
+        {{ genre.name }}{% if not forloop.last %}, {% endif %}
+    {% empty %}
+    	<em>No genres</em>
+    {% endfor %}
+    </li>
+    <li>Rating: <em>DODELAT AVERAGE FILMU!!!</em></li>
+    </ul>
+    <form action="" method="post">              {#    {% url 'add_review' movie.id %}    #}
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Potvrdit</button>
+    </form>
+
+{% endblock %}

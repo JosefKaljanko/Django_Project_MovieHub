@@ -1,0 +1,12 @@
+{#TODO udelat logout pres class view odhlaseni na logout.html -> form/POST -> LogOut!!#}
+
+<div>
+
+    {% if user.is_authenticated %}
+    <p>Vítej, {{ user.username }}! <a href="{% url 'logout' %}" class="">Odhlásit</a></p>
+        <p><a href="{% url 'profile' %}">Profil</a></p>
+    {% else %}
+    <p><a href="{% url 'login' %}">Přihlásit</a></p>
+    <p><a href="{% url 'register' %}">Registrovat</a></p>
+    {% endif %}
+</div>

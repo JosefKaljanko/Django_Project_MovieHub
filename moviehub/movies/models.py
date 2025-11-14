@@ -1,6 +1,8 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
+from datetime import datetime    # TADY TADY TADY TADY
 
 
 
@@ -50,8 +52,14 @@ class Actor(models.Model):
     surname = models.CharField(max_length=30)
     bio = models.TextField(blank=True) # blank znamená ze pole nemusi byt vyplneno
 
+    def clean(self):
+        """surname duplicity control"""
+        if self.surname and Actor.objects.filter(surname = self.surname).exclude(pk=self.pk).exists():
+            raise ValidationError({"surname": f"Surname: '{self.surname}' already exists"})
+# TODO - musí tady být uprava metody save() když mi toto funguje a validuje v adminu ???
+
     def __str__(self):
-        return self.name
+        return f"{self.surname} {self.name}"
 
     class Meta:
         ordering = ["surname", "name"]
@@ -63,7 +71,11 @@ class Movie(models.Model):
     # objects = None
     title = models.CharField(max_length=100)
     description = models.TextField()
-    release_date = models.DateField()
+    release_date = models.DateField()  # TADY TADY TADY TADY
+    # release_year = models.PositiveIntegerField(
+    #     validators=[MinValueValidator(1920),
+    #                 MaxValueValidator(datetime.now().year)]
+    # )  # TADY TADY TADY TADY
     slug = models.SlugField(unique=True, blank=True, max_length=125, db_index=True)
     genres = models.ManyToManyField(Genre, related_name="movies")
     actors = models.ManyToManyField(Actor,related_name="movies")

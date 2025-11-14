@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Movie Detail
+{% endblock %}
+
+{% block content %}
+    <h1>Detail Filmu: {{ movie.title }}</h1>
+    <p>{{ movie.description }}</p>
+
+    <h3>Reviews:</h3>
+    <ul>
+        {% for review in movie.reviews.all %}
+            <li>
+            {{ review.user }}: {{ review.comment }} ({{ review.rating }}/10)
+            {{ reviews }}
+            </li>
+        {% empty %}
+            <li>No reviews.</li>
+        {% endfor %}
+    </ul>
+
+{# TODO -> POUZE PRO PRIHLASENE!!!! DODELAT #}
+{% if user.is_authenticated %}
+    <form action="{% url 'add_review' movie.id %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="" type="submit">Add Review</button>
+    </form>
+{% else %}
+{#    <p><a href="{% url 'login' %}">Login to add reviews</a></p>#}
+    <p><a href="/accounts/login/">Login to add reviews</a></p>
+{% endif %}
+
+
+
+
+
+{#    {{ form }}#}
+{% endblock %}

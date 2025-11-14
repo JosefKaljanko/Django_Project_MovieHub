@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+	Editace profilu
+{% endblock %}
+
+{% block content %}
+	<h1>Upravit Profil:</h1>
+    <form action="" method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    {% if form %}
+        <button type="submit" >Potvrdit Změny</button>
+    {% endif %}
+    </form>
+
+    {% if mes %}
+    	{{ mes }}
+    {% endif %}
+{% endblock %}

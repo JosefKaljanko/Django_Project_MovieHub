@@ -14,7 +14,13 @@
 
 
 <body>
-    <header class="main-header">{% include 'particles/header.html' %}</header>
+    <header class="main-header">
+        <nav class="nav-bar">
+            {% include 'particles/header.html' %}
+            {% include 'movies/particles/header.html' %}
+            {% include 'accounts/particles/login_or_logout.html' %}
+        </nav>
+    </header>
     <div class="main-content">
         {% block content %}{% endblock %}
     </div>

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+	Tvůj profil
+{% endblock %}
+
+{% block content %}
+	<h1>Profile {{ user.username|capfirst }}</h1>
+    <h3>
+        {{ user }}<br>
+        {{ user.email }}
+    </h3>
+
+    {% if user.bio %}
+        {{ user.bio }}
+    {% else %}
+        <p>{{ user.username }} nemá o sobě žádný popis</p>
+    {% endif %}
+
+    {% if user.avatar %}
+        <p>Avatar OK</p>
+    {% else %}
+        <p>{{ user.username }} nemá nastavený avatar</p>
+    {% endif %}
+    <a href="{% url 'profile_edit' %}">Upravit Profil</a>
+{% endblock %}
