@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from .forms import CustomProfileEditForm
+from .forms import CustomProfileEditForm, CusProfEditForm
 # update Profile
 # from django.views.generic import UpdateView
 
@@ -46,8 +46,10 @@ def logout_view(request):
 
 @login_required
 def profile(request):
+    context = {"user": request.user}
     if request.method == "GET":
-        return render(request, "accounts/profile.html",{"user": request.user})
+        # return render(request, "accounts/profile.html",{"user": request.user})
+        return render(request, "accounts/profile.html",context)
 
 # class ProfileEditView(LoginRequiredMixin, UpdateView):
 #     model = User
@@ -61,10 +63,30 @@ class CustomProfileEdit(View):
         return render(request, "accounts/profile_edit.html",context)
     def post(self,request):
         username = request.POST.get("username")
-        email = request.POST.get("email")
+        # email = request.POST.get("email")
         bio = request.POST.get("bio")
         print(username)
-        print(email)
+        # print(email)
+        print(bio)
+        if User.objects.filter(username=username).exclude(pk=request.user.pk).exists():
+            print(f"{username} is already registered.")
+            return render(request, "accounts/profile_edit.html",context={"form":CustomProfileEditForm(), "mes":"Username už existuje!!"})
+
+        conttext = {"mes":"dekujeme, data máme, pracujeme na tom..."}
+        return render(request, "accounts/profile_edit.html",conttext)
+
+class CustomProfileEdit2(View):
+    def get(self,request):
+        # form = CustomProfileEditForm(instance=request.user)
+        form = CusProfEditForm(instance=request.user)
+        context = {"form":form}
+        return render(request, "accounts/profile_edit.html",context)
+    def post(self,request):
+        username = request.POST.get("username")
+        # email = request.POST.get("email")
+        bio = request.POST.get("bio")
+        print(username)
+        # print(email)
         print(bio)
 
         conttext = {"mes":"dekujeme, data máme, pracujeme na tom..."}

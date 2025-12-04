@@ -15,23 +15,48 @@
 
     <form action="" method="post" class="">
     {% csrf_token %}
-    <div>
+
+{#    <div class="form-floating mb-3">#}
+{#          <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com" name="username" required>#}
+{#          <label for="floatingInput">Uživatel:</label>#}
+{#    </div>#}
+    <div class="form-floating mb-3">
+        <input class="form-control" type="text" name="username" id="username" placeholder="username" required><br>
         <label for="username">Uživatel:</label>
-        <input type="text" name="username" id="username" required><br>
     </div>
-    <div>
+{#    <div class="">#}
+{#        <label for="username">Uživatel:</label>#}
+{#        <input class="" type="text" name="username" id="username" required><br>#}
+{#    </div>#}
+
+    <div class="form-floating mb-3">
+        <input class="form-control" type="email" name="email" id="email" placeholder="name@name.com" required><br>
         <label for="email">Email:</label>
-        <input type="text" name="email" id="email" required><br>
     </div>
-    <div>
+{#    <div>#}
+{#        <label for="email">Email:</label>#}
+{#        <input type="text" name="email" id="email" required><br>#}
+{#    </div>#}
+
+    <div class="form-floating mb-3">
+        <input class="form-control" type="password" name="password" id="password" placeholder="***" required><br>
         <label for="password">Heslo:</label>
-        <input type="password" name="password" id="password" required><br>
     </div>
-    <div>
+{#    <div>#}
+{#        <label for="password">Heslo:</label>#}
+{#        <input type="password" name="password" id="password" required><br>#}
+{#    </div>#}
+
+    <div class="form-floating mb-3">
+        <input class="form-control" type="password" name="password2" id="password2" placeholder="***" required><br>
         <label for="password2">Heslo znovu:</label>
-        <input type="password" name="password2" id="password2" required><br>
     </div>
-    <button type="submit" class="">Registrovat</button>
+{#    <div>#}
+{#        <label for="password2">Heslo znovu:</label>#}
+{#        <input type="password" name="password2" id="password2" required><br>#}
+{#    </div>#}
+{#        #}
+    <button type="submit" class="btn btn-primary">Registrovat</button>
     </form>
 
 {% endblock %}

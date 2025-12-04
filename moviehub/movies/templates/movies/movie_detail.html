@@ -6,10 +6,39 @@ Movie Detail
 {% endblock %}
 
 {% block content %}
-    <h1>Detail Filmu: {{ movie.title }}</h1>
+    <h1>Detail Filmu: </h1>
+    <h2>{{ movie.title }}</h2>
+    <li>Year:
+        {% if movie.release_date %}
+            {{ movie.release_date|date:"Y" }}</li>
+        {% else %}
+            <em>Unknown</em>
+        {% endif %}
+    <li>Genre:
+    {% for genre in movie.genres.all %}
+        {{ genre.name }}{% if not forloop.last %}, {% endif %}
+    {% empty %}
+    	<em>No genres</em>
+    {% endfor %}
+    </li>
+    <li>Rating:
+        {% if avg_rating %}
+            {{ avg_rating|floatformat:2 }}
+        {% else %}
+        	<em>No reviews to calculate rating.</em>
+        {% endif %}
+    </li>
+    <li>
+    Actors:
+    {% for actor in movie.actors.all %}
+        {{ actor }}{% if not forloop.last %},{% endif %}{% if forloop.last %}.{% endif %}
+    {% empty %}
+        <em>No data about actors.</em>
+    {% endfor %}
+    </li>
     <p>{{ movie.description }}</p>
 
-    <h3>Reviews:</h3>
+    <h1>Reviews:</h1>
     <ul>
         {% for review in movie.reviews.all %}
             <li>
@@ -17,7 +46,7 @@ Movie Detail
             {{ reviews }}
             </li>
         {% empty %}
-            <li>No reviews.</li>
+            <li style="color: firebrick"><h3>No reviews.</h3></li>
         {% endfor %}
     </ul>
 

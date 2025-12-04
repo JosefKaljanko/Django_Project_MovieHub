@@ -13,9 +13,30 @@
     {% else %}
     <form action="" method="post" class="">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="">Přihlásit</button>
+{#        {{ form.as_p }}#}
+{#        {{ form }}#}
+    <div class="form-floating mb-3">
+        {{ form.username }}
+        <label for="floatingUsername">{{ form.username.label }}</label>
+        {% if form.username.errors %}
+            <div class="text-danger small">{{ form.username.errors }}</div>
+        {% endif %}
+    </div>
+    <div class="form-floating mb-3">
+        {{ form.password }}
+        <label for="floatingPassword">{{ form.password.label }}</label>
+        {% if form.password.errors %}
+            <div class="text-danger small">{{ form.password.errors }}</div>
+        {% endif %}
+    </div>
+        <button type="submit" class="btn btn-primary">Přihlásit</button>
     </form>
-    <p>Nemáš účet?? <a href="{% url 'register' %}">Nový uživatel</a></p>
+      <br>
+        <h6>
+          Nemáš účet??
+            <a href="{% url 'register' %}">
+              <button type="button" class="btn btn-secondary btn-sm">Registrovat</button>
+            </a>
+        </h6>
     {% endif %}
 {% endblock %}

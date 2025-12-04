@@ -9,7 +9,12 @@
     <h1>Movie detail:</h1>
     <ul>
     <li>Title: {{ movie.title }}</li>
-    <li>Year: {{ movie.release_date }}</li>
+    <li>Year:
+        {% if movie.release_date %}
+            {{ movie.release_date|date:"Y" }}</li>
+        {% else %}
+            <em>Unknown</em>
+        {% endif %}
     <li>Genre:
     {% for genre in movie.genres.all %}
         {{ genre.name }}{% if not forloop.last %}, {% endif %}
@@ -17,11 +22,44 @@
     	<em>No genres</em>
     {% endfor %}
     </li>
-    <li>Rating: <em>DODELAT AVERAGE FILMU!!!</em></li>
+    <li>Rating:
+{#    avg_rating#}
+        {% if avg_rating %}
+            {{ avg_rating|floatformat:2 }}
+        {% else %}
+        	<em>No reviews to calculate rating.</em>
+        {% endif %}
+    </li>
     </ul>
     <form action="" method="post">              {#    {% url 'add_review' movie.id %}    #}
     {% csrf_token %}
-    {{ form.as_p }}
+{#    {{ form.as_p }}#}
+
+{#        <div class="mb-3">#}
+{#            <label for="exampleFormControlInput1" class="form-label">Rating:</label>#}
+{#            <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="number 1-10" min="1" max="10" step="1">#}
+{#        </div>#}
+{#        <div class="mb-3">#}
+{#          <label for="exampleFormControlTextarea1" class="form-label">Comment:</label>#}
+{#          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>#}
+{#        </div>#}
+{#        #}
+        <div class="mb-3">
+            <label for="{{ form.rating.id_for_label }}" class="form-label">Rating:</label>
+            {{ form.rating }}
+            {% if form.rating.errors %}
+                <div class="text-danger small">{{ form.rating.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+          <label for="{{ form.comment.id_for_label }}" class="form-label">Comment:</label>
+          {{ form.comment }}
+          {% if form.comment.errors %}
+              <div class="text-danger small">{{ form.comment.errors }}</div>
+          {% endif %}
+        </div>
+{#        {{ form.rating }}#}
+{#        {{ form.comment }}#}
     <button type="submit">Potvrdit</button>
     </form>
 

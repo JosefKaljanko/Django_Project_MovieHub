@@ -23,5 +23,7 @@
     {% else %}
         <p>{{ user.username }} nemá nastavený avatar</p>
     {% endif %}
-    <a href="{% url 'profile_edit' %}">Upravit Profil</a>
+    <a href="{% url 'profile_edit' %}">
+      <button type="button" class="btn btn-primary">Upravit Profil</button>
+    </a>
 {% endblock %}

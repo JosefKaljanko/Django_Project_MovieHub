@@ -1,7 +1,7 @@
 from profile import Profile
 
 from django.urls import path
-from .views import (logout_view, RegisterView, profile,CustomProfileEdit)
+from .views import (logout_view, RegisterView, profile,CustomProfileEdit, CustomProfileEdit2)
 from django.contrib.auth.views import LoginView, LogoutView, UserModel
 from .forms import CustomLoginForm,CustomProfileEditForm
 
@@ -11,6 +11,7 @@ urlpatterns = [
     path('accounts/login/', LoginView.as_view(template_name='accounts/login.html', authentication_form=CustomLoginForm), name="login"),
     path('accounts/profile/', profile, name="profile"),
     path('accounts/profile/edit/', CustomProfileEdit.as_view(), name="profile_edit"),
+    path('accounts/profile/edit2/', CustomProfileEdit2.as_view(), name="profile_edit_2"),
     # path('', func, name=""),
 
 ]
