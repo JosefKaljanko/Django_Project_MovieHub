@@ -6,37 +6,80 @@
 {% endblock %}
 
 {% block content %}
-	<h1>LOGIN USER:</h1>
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <h1 class="h2 mb-3 text-center">LOGIN USER:</h1>
 
-    {% if user.is_authenticated %}
-        <p>Již jsi přihlášen jako {{ user.username }}</p>
-    {% else %}
-    <form action="" method="post" class="">
-    {% csrf_token %}
-{#        {{ form.as_p }}#}
-{#        {{ form }}#}
-    <div class="form-floating mb-3">
-        {{ form.username }}
-        <label for="floatingUsername">{{ form.username.label }}</label>
-        {% if form.username.errors %}
-            <div class="text-danger small">{{ form.username.errors }}</div>
-        {% endif %}
+                {# BOOTSTRAP ALERTS MESSAGES #}
+                {% if messages %}
+                	{% for message in messages %}
+                		<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                	{% endfor %}
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    <div class="alert alert-info">
+                        <p>Již jsi přihlášen jako <strong>{{ user.username }}</strong></p>
+                    </div>
+                {% else %}
+
+                    {# NON-FIELD ERRORS - npř spatne heslo #}
+                    {% if form.non_field_errors %}
+                    	<div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                            	<div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                <form action="" method="post" class="" novalidate>
+                    {% csrf_token %}
+            {#        {{ form.as_p }}#}
+            {#        {{ form }}#}
+                        <div class="form-floating mb-3">
+                            {{ form.username }}
+                            <label for="floatingUsername">{{ form.username.label }}</label>
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.username.errors %}
+                                        {{ error }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    <div class="form-floating mb-3">
+                        {{ form.password }}
+                        <label for="floatingPassword">{{ form.password.label }}</label>
+                        {% if form.password.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.password.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        Přihlásit
+                    </button>
+                </form>
+                  <br>
+                <div class="mt-2 text-center">
+                    <small>
+                        <p class="h6 text-center">Nemáš účet??</p><br>
+                        <a href="{% url 'register' %}" class="mt-1 btn btn-secondary w-100">
+                            Registrovat
+{#                            <button type="button" class="btn btn-secondary btn-sm">Registrovat</button>#}
+                        </a>
+                    </small>
+                </div>
+
+                {% endif %}
+            </div>
+        </div>
     </div>
-    <div class="form-floating mb-3">
-        {{ form.password }}
-        <label for="floatingPassword">{{ form.password.label }}</label>
-        {% if form.password.errors %}
-            <div class="text-danger small">{{ form.password.errors }}</div>
-        {% endif %}
-    </div>
-        <button type="submit" class="btn btn-primary">Přihlásit</button>
-    </form>
-      <br>
-        <h6>
-          Nemáš účet??
-            <a href="{% url 'register' %}">
-              <button type="button" class="btn btn-secondary btn-sm">Registrovat</button>
-            </a>
-        </h6>
-    {% endif %}
 {% endblock %}

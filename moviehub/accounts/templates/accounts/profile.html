@@ -6,24 +6,56 @@
 {% endblock %}
 
 {% block content %}
-	<h1>Profile {{ user.username|capfirst }}</h1>
-    <h3>
-        {{ user }}<br>
-        {{ user.email }}
-    </h3>
+    <div class="continer my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
 
-    {% if user.bio %}
-        {{ user.bio }}
-    {% else %}
-        <p>{{ user.username }} nemá o sobě žádný popis</p>
-    {% endif %}
+                        <h2 class="card-title mb-3">
+                            Profile: {{ user.username|capfirst }}
+                        </h2>
 
-    {% if user.avatar %}
-        <p>Avatar OK</p>
-    {% else %}
-        <p>{{ user.username }} nemá nastavený avatar</p>
-    {% endif %}
-    <a href="{% url 'profile_edit' %}">
-      <button type="button" class="btn btn-primary">Upravit Profil</button>
-    </a>
+                        {# AVATAR #}
+                        {% if user.userprofile.avatar %}
+                            <img src="{{ user.userprofile.avatar.url }}"
+                                 class="rounded-circle mb-3"
+                                 style="width: 120px; height: 120px; object-fit: cover;"
+                                 alt="avatar">
+                        {% else %}
+                            <img src="{% static 'img/default_avatar.png' %} }"
+                                 class="rounded-circle mb-3"
+                                 style="width: 120px; height: 120px; object-fit: cover;"
+                                 alt="avatar">
+                        {% endif %}
+
+                        <h5>
+                            {{ user.email }}
+                        </h5>
+
+                        <hr class="my-4">
+                        {# BIO #}
+                        <h5 class="text-start">O mně:</h5>
+
+                        {% if user.userprofile.bio %}
+                            <p class="text-start">
+                                {{ user.userprofile.bio }}
+                            </p>
+                        {% else %}
+                            <p class="text-start text-muted">
+                                Zatím není vyplněno žádné bio.
+                            </p>
+                        {% endif %}
+
+                        <div class="d-grid mt-4">
+                            <a href="{% url 'profile_edit' %}" class="btn btn-primary">
+                                Upravit Profil
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
