@@ -27,3 +27,19 @@ APP/REVIEWS
         → DODELAT AVERAGE FILMU!!!
 
 PREDELAT NA BOOTSTRAP!!!
+
+9.12.25
+  •uprava profilu udaje = user
+                 bio,avatar = userprofile "user.profile.bio/avatar"
+  •nachystany adresář a non profile obrazek v svg
+  • zapsané v settings
+
+  • nachystany "dark/light" mod  -> light není ok, barva tlacikta a textu, stejné barvy header+body (upravit na rozdilne barvy)
+
+    • uprava views (reviews & movies)
+        - kvuli formuláře (1 uživatel = 1 recenze!!!)
+    • uprava movie_detail.html
+        -> neprihlaseny = login
+        -> prihlaseny - bez recenze = form
+                      -   s recenzí = zobrazení recenze..
+

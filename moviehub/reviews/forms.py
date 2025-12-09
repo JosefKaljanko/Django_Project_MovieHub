@@ -17,6 +17,7 @@ class AddReviewForm(forms.ModelForm):
         #     "comment": forms.Textarea(attrs={"class": "review-form","rows": 3, "cols": 50}),
         # }
 
+# add_review.html
 class AddReviewForm2(forms.ModelForm):
     """formular pro pridani recenze"""
     class Meta:

@@ -4,9 +4,17 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     """rozšiřeni uzivatelskeho profilu o bio a avatar."""
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar= models.ImageField(blank=True, upload_to="avatars/", null=True) #???
+
+
+    def avatar_path(self, filename):
+        return f"avatars/user_{self.user.id}/{filename}"
+
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    # avatar= models.ImageField(blank=True, upload_to="avatars/", null=True) #???
+    avatar= models.ImageField(blank=True, upload_to=avatar_path, null=True) #???
     bio = models.TextField(blank=True)
 
     def __str__(self):
         return self.user.username
+

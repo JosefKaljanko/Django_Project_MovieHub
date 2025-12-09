@@ -49,12 +49,12 @@ class CustomProfileEditForm(forms.ModelForm):
     username = forms.CharField(
         max_length=50,
         label="Uživatelské Jméno",
+        help_text="Zde zadejte vaše uživatelske jméno.",
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'id': 'floatingUsername',
             "placeholder": "Username",
         }),
-        # help_text="Zde zadejte vaše uživatelske jméno."
     )
 
     email = forms.EmailField(

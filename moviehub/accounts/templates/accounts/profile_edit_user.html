@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-	Editace Bio & Avatar
+	Editace profilu
 {% endblock %}
 
 {% block content %}
@@ -11,68 +11,72 @@
             <div class="col-md-8 col-lg-6">
 
 {#                <h1 class="h4 mb-4 text-center">Upravit bio & avatar:</h1>#}
-            {% comment %}
+
                 {# BOOTSTRAP ALERTS PRO MESSAGES #}
-                {% if messages %}
-                	{% for message in messages %}
-                		<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                	{% endfor %}
-                {% endif %}
-            {% endcomment %}
+{#                {% if messages %}#}
+{#                	{% for message in messages %}#}
+{#                		<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">#}
+{#                            {{ message }}#}
+{#                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>#}
+{#                        </div>#}
+{#                	{% endfor %}#}
+{#                {% endif %}#}
 
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h2 class="h4 mb-4 text-center">Upravit bio & avatar:</h2>
+                        <h2 class="h4 mb-4 text-center"> Upravit údaje:</h2>
 
-{#                        <hr>#}
                         {% if messages %}
-                        	{% for message in messages %}
+                	        {% for message in messages %}
                                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                                     {{ message }}
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
-                            {% endfor %}
+                	        {% endfor %}
                         {% endif %}
 
-                        <form action="" method="post" enctype="multipart/form-data" novalidate>
+                        <form action="" method="post" novalidate>
                             {% csrf_token %}
-                            {# BIO #}
-                            <div class="mb-3">
-                                <label for="floatingBio" class="form-label">{{ form.bio.label }}</label>
-                                    {{ form.bio }}
-                                {% if form.bio.errors %}
+                            {# USERNAME #}
+                            <div class="form-floating mb-3">
+                                {{ form.username }}
+                                <label for="floatingUsername">{{ form.username.label }}</label>
+
+                                {% if form.username.errors %}
                                     <div class="text-danger small mt-1">
-                                        {% for error in form.bio.errors %}
-                                        	{{ error }}<br>
+                                        {% for error in form.username.errors %}
+                                        	{{ error }}
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                                {% if form.bio.help_text %}
-                                    <div class="form-text">{{ form.bio.help_text }}</div>
+
+                                {% if form.username.help_text %}
+                                    <div class="form-text">{{ form.username.help_text }}</div>
                                 {% endif %}
                             </div>
 
-                            {# AVATAR #}
-                            <div class="mb-3">
-                                <label class="form-label">{{ form.avatar.label }}</label>
-                                    {{ form.avatar }}
-                                {% if form.avatar.errors %}
+                            {# EMAIL #}
+                            <div class="form-floating mb-3">
+                                {{ form.email }}
+                                <label for="floatingEmail">{{ form.email.label }}</label>
+                                {% if form.email.errors %}
                                     <div class="text-danger small mt-1">
-                                        {% for error in form.avatar.errors %}
+                                        {% for error in form.email.errors %}
                                             {{ error }}<br>
                                         {% endfor %}
                                     </div>
+                                {% endif %}
+
+                                {% if form.email.help_text %}
+                                	<div class="form-text">{{ form.email.help_text }}</div>
                                 {% endif %}
                             </div>
 
                         {#    {{ form.as_p }}#}
 
                             {% if form %}
+{#                                <p class="text-center">profile_edit_user.html</p>#}
                                 <button type="submit" class="btn btn-primary w-100">
-{#                                    <p>profile_edit.html</p>#}
                                     Potvrdit Změny
                                 </button>
                             {% endif %}
@@ -90,6 +94,4 @@
             </div>
         </div>
     </div>
-
 {% endblock %}
-

@@ -2,69 +2,246 @@
 {% load static %}
 
 {% block title %}
-Movie Detail
+    {{ movie.title }}Movie Detail
 {% endblock %}
 
 {% block content %}
-    <h1>Detail Filmu: </h1>
-    <h2>{{ movie.title }}</h2>
-    <li>Year:
-        {% if movie.release_date %}
-            {{ movie.release_date|date:"Y" }}</li>
-        {% else %}
-            <em>Unknown</em>
-        {% endif %}
-    <li>Genre:
-    {% for genre in movie.genres.all %}
-        {{ genre.name }}{% if not forloop.last %}, {% endif %}
-    {% empty %}
-    	<em>No genres</em>
-    {% endfor %}
-    </li>
-    <li>Rating:
-        {% if avg_rating %}
-            {{ avg_rating|floatformat:2 }}
-        {% else %}
-        	<em>No reviews to calculate rating.</em>
-        {% endif %}
-    </li>
-    <li>
-    Actors:
-    {% for actor in movie.actors.all %}
-        {{ actor }}{% if not forloop.last %},{% endif %}{% if forloop.last %}.{% endif %}
-    {% empty %}
-        <em>No data about actors.</em>
-    {% endfor %}
-    </li>
-    <p>{{ movie.description }}</p>
+    <div class="row justify-content-center my-4">
+        <div class="col-lg-10">
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    
+                    <div class="row">
+                        {# Levá strava -> plakát #}
+                        <div class="col-md-4 mb-3 mb-md-0 text-center">
+                            {% if movie.poster %}
+                                <img src="{{ movie.poster.url }}" 
+                                     alt="{{ movie.title }}"
+                                     class="img-fluid rounded">
+                            {% else %}
+                                <img src="{% static 'img/default_movie_poster.jpg' %}"
+                                     alt="{{ movie.title }}"
+                                     class="img-fluid rounded">
+                            {% endif %}
+                        </div>
 
-    <h1>Reviews:</h1>
-    <ul>
-        {% for review in movie.reviews.all %}
-            <li>
-            {{ review.user }}: {{ review.comment }} ({{ review.rating }}/10)
-            {{ reviews }}
+                        {# PRAVA STRANA INFO #}
+                        <div class="col-md-8">
+                            <h1 class="h3 mb-2">{{ movie.title }}</h1>
+
+                            <div class="mb2">
+                                <span class="badge text-bg-secondary me-1">
+                                    Rok:
+                                    {% if movie.release_date %}
+                                    	{{ movie.release_date|date:"Y" }}
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
+                                </span>
+
+                                {% if avg_rating %}
+                                	<span class="badge text-bg-primary">
+                                        ⭐ {{ avg_rating|floatformat:1 }}/10
+                                    </span>
+                                {% else %}
+                                    <span class="badge text-bg-warning text-dark">
+                                        Bez hodnocení
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <p class="mb-2">
+                                <strong>Žánry:</strong>
+                                {% for genre in movie.genres.all %}
+                                	<span class="badge text-bg-dark me-1">{{ genre.name }}</span>
+                                {% empty %}
+                                	<em class="text-muted">Žádné žánry</em>
+                                {% endfor %}
+                            </p>
+
+                            <p class="mb-2">
+                                <strong>Herci:</strong>
+                                {% for actor in movie.actors.all %}
+                                	{{ actor }}{% if not forloop.last %},{% else %}.{% endif %}
+                                {% empty %}
+                                	<em class="text-muted">Žádná data o hercích.</em>
+                                {% endfor %}
+                            </p>>
+
+                            <hr>
+
+                            <p class="mb-0">
+                                {{ movie.description }}
+                            </p>
+                        </div>
+                    
+                    </div>
+                
+                </div>
+            </div>
+
+            {# RECENZE #}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Recenze</h2>
+
+                    <ul class="list-group list-group-flush">
+                        {% for review in movie.reviews.all %}
+                        	<li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <strong>{{ review.user.username }}</strong>
+                                    <span class="badge text-bg-info">
+                                        {{ review.rating }}/10
+                                    </span>
+                                </div>
+                                {% if review.created_at %}
+                                	<small class="text-muted">
+                                        {{ review.created_at|date:"d.m.Y H:i" }}
+                                    </small>
+                                {% endif %}
+                                <p class="mb-0 mt-1">
+                                    {{ review.comment }}
+                                </p>
+                            </li>
+                        {% empty %}
+                        	<li class="list-group-item">
+                                <span class="text-muted">Zatím žádné recenze.</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            {# FORMULAR PRO PRIDANI RECENZE #}
+            {% if user.is_authenticated %}
+                {% if has_review %}
+                	<div class="alert alert-secondary">
+                        Tento film jsi již hodnotil.
+                        {% if user_review %}
+                            <br>
+                            Tvoje hodnocení: <strong>{{ user_review.rating }}/10</strong><br>
+                            Komentář: {{ user_review.comment }}
+                        {% endif %}
+                    </div>
+                {% else %}
+
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h2 class="h5 mb-3">Přidat recenzi</h2>
+
+                                <form action="{% url 'add_review' movie.id %}" method="post" novalidate>
+                                {% csrf_token %}
+
+                                <div class="mb-3">
+                                    <label for="id_rating" class="form-label">
+                                        {{ form.rating.label|default:"Hodnocení (1-10)" }}
+                                    </label>
+                                    {{ form.rating }}
+                                    {% if form.rating.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.rating.errors %}
+                                                {{ error }}<br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="id_comment" class="form-label">
+                                        {{ form.comment.label|default:"Komentář" }}
+                                    </label>
+                                    {{ form.comment }}
+                                    {% if form.comment.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.comment.errors %}
+                                                {{ error }}<br>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    Přidat recenzi
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-info">
+                    Pro přidání recenze se prosím
+                    <a href="{% url 'login' %}" class="alert-link">přihlas</a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+
+        {# ORIGINAL ORIGINAL #}
+            <h1>Detail Filmu: </h1>
+            <h2>{{ movie.title }}</h2>
+            <li>Year:
+                {% if movie.release_date %}
+                    {{ movie.release_date|date:"Y" }}</li>
+                {% else %}
+                    <em>Unknown</em>
+                {% endif %}
+            <li>Genre:
+            {% for genre in movie.genres.all %}
+                {{ genre.name }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+                <em>No genres</em>
+            {% endfor %}
             </li>
-        {% empty %}
-            <li style="color: firebrick"><h3>No reviews.</h3></li>
-        {% endfor %}
-    </ul>
+            <li>Rating:
+                {% if avg_rating %}
+                    {{ avg_rating|floatformat:2 }}
+                {% else %}
+                    <em>No reviews to calculate rating.</em>
+                {% endif %}
+            </li>
+            <li>
+            Actors:
+            {% for actor in movie.actors.all %}
+                {{ actor }}{% if not forloop.last %},{% endif %}{% if forloop.last %}.{% endif %}
+            {% empty %}
+                <em>No data about actors.</em>
+            {% endfor %}
+            </li>
+            <p>{{ movie.description }}</p>
 
-{# TODO -> POUZE PRO PRIHLASENE!!!! DODELAT #}
-{% if user.is_authenticated %}
-    <form action="{% url 'add_review' movie.id %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="" type="submit">Add Review</button>
-    </form>
-{% else %}
-{#    <p><a href="{% url 'login' %}">Login to add reviews</a></p>#}
-    <p><a href="/accounts/login/">Login to add reviews</a></p>
-{% endif %}
+            <h1>Reviews:</h1>
+            <ul>
+                {% for review in movie.reviews.all %}
+                    <li>
+                    {{ review.user }}: {{ review.comment }} ({{ review.rating }}/10)
+                    {{ reviews }}
+                    </li>
+                {% empty %}
+                    <li style="color: firebrick"><h3>No reviews.</h3></li>
+                {% endfor %}
+            </ul>
+
+            {# TODO -> POUZE PRO PRIHLASENE!!!! pouze pokud neni review -> DODELAT #}
+            {% if user.is_authenticated %}
+                <form action="{% url 'add_review' movie.id %}" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                    <div class="">
+                        <button class="btn btn-primary mb-3" type="submit">Add Review</button>
+                    </div>
+
+                </form>
+            {% else %}
+            {#    <p><a href="{% url 'login' %}">Login to add reviews</a></p>#}
+                <p><a href="/accounts/login/" class="btn btn-primary mb-2">Login to add reviews</a></p>
+            {% endif %}
 
 
 
 
 
-{#    {{ form }}#}
+            {#    {{ form }}#}
 {% endblock %}

@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.views import View
 from movies.models import Movie, Actor, Genre
-from reviews.forms import AddReviewForm
+from reviews.forms import AddReviewForm, AddReviewForm2
 from django.db.models import Avg
 from django.contrib import messages   # login
+from reviews.models import Review
 
 
 class MovieListView(View):
@@ -23,8 +24,27 @@ class MovieDetailView(View):
     def get(self, request, slug):
         movie = get_object_or_404(Movie, slug=slug)
         avg_rating = movie.reviews.aggregate(Avg('rating'))['rating__avg']
-        form = AddReviewForm()
-        return render(request, "movies/movie_detail.html", {"movie": movie, "form": form, "avg_rating": avg_rating})
+
+        user_review = None
+        has_review = False
+        if request.user.is_authenticated:
+            user_review = Review.objects.filter(movie=movie, user=request.user).first()
+            has_review = user_review is not None
+
+        form = None
+        if request.user.is_authenticated and not has_review:
+            form = AddReviewForm2()
+
+        context = {
+            "movie": movie,
+            "avg_rating": avg_rating,
+            "form": form,
+            "user_review": user_review,
+            "has_review": has_review,
+
+        }
+
+        return render(request, "movies/movie_detail.html", context)
 
 class GenreListView(View):
     def get(self, request):

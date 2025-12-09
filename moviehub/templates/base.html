@@ -1,13 +1,13 @@
 {% load static %}
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}MovieHub{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     {% block css_styles %}{% endblock %}
 
@@ -27,25 +27,37 @@
 {#    </header>#}
 
 {# NAVIGACE #}
-<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm"
+{#     data-bs-theme="dark"#}
+>
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'all_movies' %}">Movie Hub</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand fw-bold" href="{% url 'all_movies' %}">Movie Hub</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarScroll" aria-controls="navbarScroll"
+            aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarScroll">
-      <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+      <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll"
+          style="--bs-scroll-height: 200px;">
 
 
 {#        CATEGORY DROPDOWN    #}
       {% if category_menu %}
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false">
             Category
           </a>
           <ul class="dropdown-menu">
               {% for item in category_menu %}
-                <li><a class="dropdown-item" href="{% url 'genre_detail' item.slug %}">{{ item }}</a></li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'genre_detail' item.slug %}">
+                        {{ item }}
+                    </a>
+                </li>
               {% endfor %}
 
 {#            <li><a class="dropdown-item" href="#">Action</a></li>#}
@@ -67,7 +79,12 @@
 {#      TODO NASE ODKAZY  #}
 
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'home_page' %}">Home</a>
+{#          <a class="nav-link active" #}
+          <a class="nav-link{% if request.resolver_match.url_name == 'home_page' %} active{% endif %}"
+             aria-current="page"
+             href="{% url 'home_page' %}">
+            Home
+          </a>
         </li>
 
         <li class="nav-item">
@@ -79,13 +96,14 @@
 
     {% if user.is_authenticated %}
     	<li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false">
             Profile: {{ user.username }}
           </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-            <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
+          <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+              <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+              <li><hr class="dropdown-divider"></li>
           </ul>
         </li>
     {% else %}
@@ -96,10 +114,11 @@
 
 {#      TODO OTHER: #}
       <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false">
             Other
           </a>
-          <ul class="dropdown-menu">
+          <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="{% url 'home_page' %}">Home</a></li>
             <li><a class="dropdown-item" href="{% url 'about_page' %}">About</a></li>
             <li><a class="dropdown-item" href="{% url 'author_page' %}">Author</a></li>
@@ -114,9 +133,15 @@
 
       </ul>
 
+      {# DARK/LIGHT #}
+      <div class="d-flex align-items-center">
+          <button class="btn btn-outline-light btn-sm" type="button" id="theme-toggle">
+            mode
+          </button>
+      </div>
 
 {% comment header search  %}
-      <form class="d-flex" role="search">
+      <form class="d-flex ms-3" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
@@ -125,12 +150,55 @@
   </div>
 </nav>
 
-    <div class="container">
-        <br><br>
+    <div class="container my-4">
+        {# GLOBAL MESSAGES #}
+        {% if messages %}
+        	<div class="row">
+                <div class="col-12">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
         {% block content %}{% endblock %}
     </div>
 
-
+{# BOOTSTRAP JS #}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous" defer></script>
+
+{# DARK/LIGHT TOOGLE #}
+<script>
+    (function () {
+        const storedTheme = localStorage.getItem("theme") || "dark";
+        document.documentElement.setAttribute("data-bs-theme", storedTheme);
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleBtn = document.getElementById("theme-toggle");
+            if (!toggleBtn) return;
+
+            function updateLabel(theme) {
+                toggleBtn.textContent = theme === "dark" ? "dark" : "light";
+            }
+
+            updateLabel(storedTheme);
+
+            toggleBtn.addEventListener("click", function () {
+                const current = document.documentElement.getAttribute("data-bs-theme") === "light" ? "light" : "dark";
+                const next = current === "dark" ? "light" : "dark";
+                document.documentElement.setAttribute("data-bs-theme", next);
+                localStorage.setItem("theme", next);
+                updateLabel(next);
+            });
+        });
+    })();
+</script>
+
+{% block extra_js %}{% endblock %}
+
 </body>
 </html>

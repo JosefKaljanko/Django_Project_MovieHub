@@ -10,8 +10,7 @@ from .forms import CustomProfileEditForm, CusProfEditForm
 # update Profile
 # from django.views.generic import UpdateView
 
-from .models import User
-
+from .models import User, UserProfile
 
 
 class RegisterView(View):
@@ -67,7 +66,7 @@ class CustomProfileEdit(View):
     def get(self, request):
         form = CustomProfileEditForm(instance=request.user)
         context = {"form":form}
-        return render(request, "accounts/profile_edit.html",context)
+        return render(request, "accounts/profile_edit_user.html",context)
 
     def post(self,request):
         # username = request.POST.get("username")
@@ -95,7 +94,7 @@ class CustomProfileEdit(View):
 
         # pokud form ne-ok zustanou chyby + puvodni data
         context = {"form":form}
-        return render(request, "accounts/profile_edit.html",context)
+        return render(request, "accounts/profile_edit_user.html",context)
 
 @method_decorator(login_required, name="dispatch")    # ??????
 class CustomProfileEdit2(View):
@@ -104,7 +103,8 @@ class CustomProfileEdit2(View):
     """
     def get(self, request):
         # form = CustomProfileEditForm(instance=request.user)
-        form = CusProfEditForm(instance=request.user.userprofile)
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        form = CusProfEditForm(instance=profile)
         context = {"form":form}
         return render(request, "accounts/profile_edit.html",context)
 
@@ -113,10 +113,12 @@ class CustomProfileEdit2(View):
         # bio = request.POST.get("bio")
         # print(username)
         # print(bio)
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
         form = CusProfEditForm(
             request.POST,
             request.FILES,
-            instance=request.user.userprofile,
+            # instance=request.user.userprofile,
+            instance=profile,
         )
 
         if form.is_valid():
