@@ -43,3 +43,11 @@ PREDELAT NA BOOTSTRAP!!!
         -> prihlaseny - bez recenze = form
                       -   s recenzí = zobrazení recenze..
 
+
+12.12.25
+  • pridano reviews/edit_review.html pro editaci již vytvořené recenze
+  • pridano taktéž views-py a url (...edit-review/<int:pk>/...)
+  • pouze své recenze jde upravit (get_object_or_404)
+
+  • movie_detail.html href na upravu recenze
+

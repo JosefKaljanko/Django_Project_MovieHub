@@ -14,9 +14,10 @@ def add_review(request, movie_id):
     movie = get_object_or_404(Movie, pk=movie_id)
     avg_rating = movie.reviews.aggregate(Avg('rating'))['rating__avg']
 
-    existing_reviews = Review.objects.filter(movie=movie, user=request.user).first()
-    if existing_reviews:
-        messages.warning(request, "Tento film jsi již hodnotil. Racenzi můžeš upravit.")
+
+    existing_review = Review.objects.filter(movie=movie, user=request.user).exists()
+    if existing_review:
+        messages.warning(request, "Tento film jsi již hodnotil. Recenzi můžeš upravit.")
         return redirect("movie_detail", slug=movie.slug)
 
     if request.method == "POST":
@@ -30,10 +31,38 @@ def add_review(request, movie_id):
             return redirect("movie_detail", slug=movie.slug)
     else:
         form = AddReviewForm2()
+
         context = {
             "form": form,
             "movie": movie,
             "avg_rating": avg_rating
         }
         return render(request, "reviews/add_review.html", context)
-    return render(request, "reviews/add_review.html", context=None)
+    # return render(request, "reviews/add_review.html", {"form": form, "movie": movie, "avg_rating": avg_rating})
+
+@login_required
+def edit_review(request, pk=None):
+    """Edit reviews = jen Autor"""
+    review = get_object_or_404(Review, pk=pk, user=request.user)
+
+    # review = get_object_or_404(Review, pk=pk)
+    # if request.method == "GET":
+    #     return render(request, "reviews/edit_review.html", {"review": review})
+    # return None
+
+    if request.method == "POST":
+        form = AddReviewForm2(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Recenze byla upravena.")
+            return redirect("movie_detail", slug=review.movie.slug)
+    else:
+        form = AddReviewForm2(instance=review)
+
+        context = {
+            "form": form,
+            "review": review,
+            "movie": review.movie,
+        }
+        return render(request,"reviews/edit_review.html", context)
+

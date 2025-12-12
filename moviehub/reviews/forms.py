@@ -19,7 +19,7 @@ class AddReviewForm(forms.ModelForm):
 
 # add_review.html
 class AddReviewForm2(forms.ModelForm):
-    """formular pro pridani recenze"""
+    """ACTIVE formular pro pridani recenze"""
     class Meta:
         model = Review
         fields = ["rating", "comment"]

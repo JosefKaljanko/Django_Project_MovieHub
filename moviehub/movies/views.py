@@ -48,7 +48,7 @@ class MovieDetailView(View):
 
 class GenreListView(View):
     def get(self, request):
-        genres = get_list_or_404(Genre.objects.all())
+        genres = Genre.objects.all()
         context = {"genres_list": genres}
         return render(request, "movies/genre_detail.html", context)
 class GenreDetailView(View):
