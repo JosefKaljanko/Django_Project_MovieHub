@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.views import View
+from pygments.lexers import q
+
 from movies.models import Movie, Actor, Genre
 from reviews.forms import AddReviewForm, AddReviewForm2
 from django.db.models import Avg
@@ -10,11 +12,30 @@ from reviews.models import Review
 class MovieListView(View):
     """Zobrazí seznam vsech filmů."""
     def get(self, request):
-        movies = Movie.objects.all()
+        # movies = Movie.objects.all()
+        q = request.GET.get("q", "").strip()
+        movies = (
+            Movie.objects.all()
+            .prefetch_related('genres')
+            .annotate(avg_rating=Avg('reviews__rating'))
+            .order_by('-id')
+        )
+
+        if q:
+            movies = movies.filter(title__icontains=q)
+
+
         category_menu = Genre.objects.all()
-        context = {"movies": movies, "category_menu": category_menu}
+        context = {
+            "movies": movies,
+            "category_menu": category_menu,
+            "q": q,
+        }
         # return render(request, "movies/movie_list.html", {"movies": movies})
         return render(request, "movies/movie_list.html", context)
+
+
+
     def post(self, request):
         ...
 

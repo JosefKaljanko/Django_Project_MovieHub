@@ -51,3 +51,14 @@ PREDELAT NA BOOTSTRAP!!!
 
   • movie_detail.html href na upravu recenze
 
+13.12.25
+  • pridano do movies/models.py
+    -> poster_image
+    -> poster_url
+    def poster => vrací jeden vystup
+
+    • dodelany list-grid
+    • url movie.poster   ==>  OK
+    • upload movie.jpeg  ==>  _?_?_?_
+
+

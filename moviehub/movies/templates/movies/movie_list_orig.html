@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Movie List
+{% endblock %}
+
+{% block content %}
+    <div class="all-movie">
+        <h1>Movie list:</h1>
+        <p>Filter BY: {{ sortform }}</p>
+            <ul>
+                {% for movie in movies %}
+                    <li class="film-title-container">
+{#                        {{ movie.title }} - {{ movie.release_date|date:"Y/m/d c b j l o W F z" }}#}
+                        {{ movie.title }} - {{ movie.release_date|date:"Y"|pprint }}
+                    </li>
+{#                    <p>{{ movie.title }}</p>#}
+{#                    <p>{{ movie.slug }}</p>#}
+                    <p class="film-title-button">
+                        <a class="button" href="{% url 'movie_detail' movie.slug %}">Detail</a> |
+                        <a class="button" href="{% url 'add_review' movie.id %}">Add Review</a>
+                    </p>
+{#                        <a class="button" href="">Add Review</a>#}
+                    {% empty %}
+                        <h3>V DATABÁZI NEJSOU ŽÁDNÉ FILMY</h3>
+        {#            <li><a href="{% url 'add_review' movie.id %}">add review</a></li>#}
+                {% endfor %}
+            </ul>
+    </div>
+
+{% endblock %}

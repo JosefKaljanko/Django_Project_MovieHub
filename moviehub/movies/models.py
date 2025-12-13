@@ -79,6 +79,8 @@ class Movie(models.Model):
     slug = models.SlugField(unique=True, blank=True, max_length=125, db_index=True)
     genres = models.ManyToManyField(Genre, related_name="movies")
     actors = models.ManyToManyField(Actor,related_name="movies")
+    poster_image = models.ImageField(upload_to="movie_posters", blank=True, null=True)
+    poster_url = models.URLField(blank=True, null=True)
 
     def clean(self):
         """není slug - vygeneruje"""
@@ -88,12 +90,29 @@ class Movie(models.Model):
         if self.slug and Movie.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
             raise ValidationError({"slug": f"Slug: '{self.slug}' already exists"})
 
+        # if not self.poster_image and self.poster_url:
+        #     raise ValidationError({"poster_url":"Zadej poster URL nebo nahraj obrázek."})
+
+    @property
+    def poster(self):
+        """
+        Jednotné pro template: movie.poster
+        - když je upload -> vrací ImageField soubor (má .url)
+        - jinak když je URL -> vrací string URL
+        - jinak None
+        """
+        if self.poster_image:
+            return self.poster_image
+        if self.poster_url:
+            return self.poster_url
+        return None
+
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.title} - {self.release_date::%d-%m-%Y}"
+        return f"{self.title} - {self.release_date:%d-%m-%Y}"
 
     class Meta:
         ordering = ["-release_date", "title"]

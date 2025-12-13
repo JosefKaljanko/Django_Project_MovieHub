@@ -38,7 +38,7 @@ def add_review(request, movie_id):
             "avg_rating": avg_rating
         }
         return render(request, "reviews/add_review.html", context)
-    # return render(request, "reviews/add_review.html", {"form": form, "movie": movie, "avg_rating": avg_rating})
+    return render(request, "reviews/add_review.html", {"form": form, "movie": movie, "avg_rating": avg_rating})
 
 @login_required
 def edit_review(request, pk=None):
@@ -64,5 +64,6 @@ def edit_review(request, pk=None):
             "review": review,
             "movie": review.movie,
         }
-        return render(request,"reviews/edit_review.html", context)
+        # return render(request,"reviews/edit_review.html", context)
+    return render(request,"reviews/edit_review.html", context)
 
