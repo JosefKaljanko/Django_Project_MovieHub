@@ -15,7 +15,10 @@ class Review(models.Model):
     """Model Recenze od uzivatele"""
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="reviews")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
-    rating = models.PositiveIntegerField(blank=False, validators=[MinValueValidator(1), MaxValueValidator(10)],help_text="Hodnocení 1-10")
+    rating = models.PositiveIntegerField(blank=False,
+                                         validators=[MinValueValidator(1), MaxValueValidator(10)],
+                                         help_text="Hodnocení 1-10"
+                                         )
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 

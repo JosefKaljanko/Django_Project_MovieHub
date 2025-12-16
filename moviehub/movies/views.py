@@ -1,3 +1,5 @@
+from random import random, choice, choices
+
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.views import View
 from pygments.lexers import q
@@ -67,14 +69,33 @@ class MovieDetailView(View):
 
         return render(request, "movies/movie_detail.html", context)
 
+    # def post(self, request, slug):
+    #     movie = get_object_or_404(Movie, slug=slug)
+    #     form = AddReviewForm2(request.POST)
+    #     if form.is_valid():
+    #         form.save()
+    #         return redirect("movie_detail", slug=slug)
+    #     return render(request, "movies/movie_detail.html", {"form": form})
+
 class GenreListView(View):
     def get(self, request):
         genres = Genre.objects.all()
-        context = {"genres_list": genres}
+        random_button = request.GET.get("random_genre")
+
+        if random_button == "random":
+            genre = choice(genres)
+            return redirect("genre_detail", slug=genre.slug)
+
+        context = {"genres_list": genres,
+                   # "genre": genre,
+                   }
         return render(request, "movies/genre_detail.html", context)
+
+
 class GenreDetailView(View):
     def get(self, request, slug):
         genre = get_object_or_404(Genre.objects.prefetch_related("movies"), slug=slug)
-        context = {"genre": genre, "movies": genre.movies.all()}
+        genres_list = Genre.objects.all()
+        context = {"genre": genre, "movies": genre.movies.all(), "genres_list": genres_list}
         return render(request, "movies/genre_detail.html", context)
 

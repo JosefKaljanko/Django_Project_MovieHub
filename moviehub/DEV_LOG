@@ -1,12 +1,14 @@
+.venv                                                               OK
+
 APP/MOVIES
     → TEMPLATES!!
     → ALL MOVIES   =    ZAKLAD                                      OK
-    → DETAIL VIEWS = NOT FUNCTIONAL  !!
-    → rozchodit - movies views a fukcionalitu!!
-                - detail views
+    → DETAIL VIEWS = NOT FUNCTIONAL  !!                             OK
+    → rozchodit - movies views a fukcionalitu!!                     OK
+                - detail views                                      OK
 
     movie_detail.html:
-        → formulář dodelat, zatím 405
+        → formulář dodelat, zatím 405                               OK
 
     → udelat stranku pro pridavani filmů GROUP & PERMISION
 
@@ -16,17 +18,20 @@ APP/ACCOUNTS
     → FORM REG/LOG                    → JEDE                         OK
     → LOGIKA HTML {% if user auth..... Login | Reg.  ||  Logout →    OK
 
-    → DODELAT Logiku upravy profilu!!! redirect a user.save()
+    → DODELAT Logiku upravy profilu!!! redirect a user.save()        OK
+        • bio                                                        OK
+        • avatar                                                     OK
+        • email, username                                            OK
 
 APP/REVIEWS
     → ADD Reviews = FORM na pridaní recenze  → Form Hotovy           OK
-    → Funkcionalita pridavaní recenzí
+    → Funkcionalita pridavaní recenzí                                OK
 
 
     add_review.html:
-        → DODELAT AVERAGE FILMU!!!
+        → DODELAT AVERAGE FILMU!!!                                   OK
 
-PREDELAT NA BOOTSTRAP!!!
+PREDELAT NA BOOTSTRAP!!!                                         1/2 OK
 
 9.12.25
   •uprava profilu udaje = user
@@ -59,6 +64,19 @@ PREDELAT NA BOOTSTRAP!!!
 
     • dodelany list-grid
     • url movie.poster   ==>  OK
-    • upload movie.jpeg  ==>  _?_?_?_
+    • upload movie.jpeg  ==>  OK
+ modified:   moviehub/DEV_LOG
+        modified:   moviehub/movies/admin.py
+        modified:   moviehub/movies/models.py
+        modified:   moviehub/movies/templates/movies/movie_detail.html
+        modified:   moviehub/movies/templates/movies/movie_list.html
+        modified:   moviehub/movies/views.py
+        modified:   moviehub/reviews/views.py
+
+
+Genre_detail edit
+    random genre add
+
+
 
 

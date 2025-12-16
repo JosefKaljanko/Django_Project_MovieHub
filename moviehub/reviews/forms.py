@@ -35,7 +35,7 @@ class AddReviewForm2(forms.ModelForm):
                     "placeholder": "1-10",
                     "min": 1,
                     "max": 10,
-                    "step": 1
+                    "step": 1,
                 }
             ),
             "comment": forms.Textarea(
@@ -43,7 +43,7 @@ class AddReviewForm2(forms.ModelForm):
                     "class": "form-control",
                     "placeholder": "Napiš komentář...",
                     "rows": 3,
-                    "cols": 50
+                    "cols": 50,
                 }
             ),
         }
