@@ -1,14 +1,24 @@
 from random import random, choice, choices
 
+from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.views import View
 from pygments.lexers import q
 
 from movies.models import Movie, Actor, Genre
 from reviews.forms import AddReviewForm, AddReviewForm2
-from django.db.models import Avg
+from django.db.models import Avg, Count, Value, FloatField
 from django.contrib import messages   # login
 from reviews.models import Review
+
+
+def get_top_movies(limit=10):
+    """Top 10 filmů podle průměrného ratingu (bez hodnocení = 0.0)"""
+    return (
+        Movie.objects
+        .annotate(avg_rating=Coalesce(Avg("reviews__rating"), Value(0.0), output_field=FloatField()))
+        .order_by("-avg_rating", "-id")[:limit]
+    )
 
 
 class MovieListView(View):
@@ -32,6 +42,7 @@ class MovieListView(View):
             "movies": movies,
             "category_menu": category_menu,
             "q": q,
+            "top_movies": get_top_movies(10),
         }
         # return render(request, "movies/movie_list.html", {"movies": movies})
         return render(request, "movies/movie_list.html", context)
@@ -79,14 +90,25 @@ class MovieDetailView(View):
 
 class GenreListView(View):
     def get(self, request):
-        genres = Genre.objects.all()
-        random_button = request.GET.get("random_genre")
+        genres = (
+            Genre.objects
+            .annotate(movie_count=Count("movies"))
+            .order_by("-movie_count", "name")
+        )
 
+        genres_with_mov = (
+            Genre.objects
+            .annotate(movie_count=Count("movies"))
+            .filter(movie_count__gt=0)
+        )
+
+        random_button = request.GET.get("random_genre")
         if random_button == "random":
-            genre = choice(genres)
+            genre = choice(genres_with_mov)
             return redirect("genre_detail", slug=genre.slug)
 
         context = {"genres_list": genres,
+                   "top_movies": get_top_movies(10),
                    # "genre": genre,
                    }
         return render(request, "movies/genre_detail.html", context)
@@ -95,7 +117,18 @@ class GenreListView(View):
 class GenreDetailView(View):
     def get(self, request, slug):
         genre = get_object_or_404(Genre.objects.prefetch_related("movies"), slug=slug)
-        genres_list = Genre.objects.all()
-        context = {"genre": genre, "movies": genre.movies.all(), "genres_list": genres_list}
+
+        genres_list = (
+            Genre.objects
+            .annotate(movie_count=Count("movies"))
+            .order_by("-movie_count", "name")
+        )
+
+        context = {
+            "genre": genre,
+            "movies": genre.movies.all(),
+            "genres_list": genres_list,
+            "top_movies": get_top_movies(10),
+        }
         return render(request, "movies/genre_detail.html", context)
 

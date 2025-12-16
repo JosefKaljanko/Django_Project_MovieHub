@@ -20,6 +20,9 @@
                                 <a href="{% url 'genre_detail' g.slug %}"
                                     class="badge text-bg-dark text-decoration-none {% if genre and g.slug == genre.slug %}border border-light{% endif %}">
                                 {{ g.name|default:g }}
+                                <span class="badge text-bg-secondary ms-1">
+                                    {{ g.movie_count }}
+                                </span>
                                 </a>
                             {% empty %}
                                 <span class="text-muted">Žádné žánry.</span>
@@ -50,7 +53,7 @@
                                     name="random_genre"
                                     value="random"
                                     class="d-grid btn btn-outline-secondary btn-sm mt-2">
-                                Vyber žánr
+                                Vyber náhodný žánr
                             </button>
                         </form>
                     </div>
