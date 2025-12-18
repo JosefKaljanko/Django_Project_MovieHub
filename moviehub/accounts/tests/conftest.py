@@ -11,3 +11,4 @@ def user(db):
         password="testpass123",
         email="user1@test.cz"
     )
+

@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User, Permission
 import pytest
-from django.test import Client
 
 
 @pytest.fixture
@@ -21,7 +20,3 @@ def editor(db):
     user.user_permissions.add(permission)
     return user
 
-# @pytest.fixture
-# def client():
-#     client = Client()
-#     return client
