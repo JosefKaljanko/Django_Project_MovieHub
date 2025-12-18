@@ -2,28 +2,13 @@ from django import forms
 # login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
-
-
 from .models import UserProfile
 from django.core.validators import EmailValidator
 
-#original
-# class CustomLoginForm(AuthenticationForm):
-#     username = forms.CharField(
-#         widget=forms.TextInput(attrs={'class': 'form-control'}),
-#         label="Uživatelské Jméno:",
-#     )
-#     password = forms.CharField(
-#         widget=forms.PasswordInput(attrs={'class': 'form-control'},
-#                                    # render_value=False
-#                                    ),
-#         label="Heslo:",
-#         # strip=False,
-#     )
 
-# -----> LOGIN FORM bootstrap <-----
 
 class CustomLoginForm(AuthenticationForm):
+    """login form"""
     username = forms.CharField(
         label="Uživatelské Jméno:",
         widget=forms.TextInput(attrs={
@@ -46,6 +31,7 @@ class CustomLoginForm(AuthenticationForm):
 # -----> EDIT USER (username, email) <-----
 
 class CustomProfileEditForm(forms.ModelForm):
+    """edit form"""
     username = forms.CharField(
         max_length=50,
         label="Uživatelské Jméno",
@@ -97,12 +83,7 @@ class CustomProfileEditForm(forms.ModelForm):
 # -----> EDIT PROF bio, avatar <-----
 # TODO udelat upravu profilu username -> model:1; bio a avatar -> model:2
 class CusProfEditForm(forms.ModelForm):
-
-    # username = forms.CharField(max_length=50,
-    #                            widget=forms.TextInput(attrs={'class': 'form-control', 'value': 'request.user'}),
-    #                            label="Nové Uživatelské Jméno",
-    #                            help_text="<br>Zde zadejte vaše uživatelske jméno. <br>")
-    #
+    """edit form bio/avatar"""
     bio = forms.CharField(
         label="O vás:",
         required=False,
@@ -111,7 +92,6 @@ class CusProfEditForm(forms.ModelForm):
             'class': 'form-control',
             'id': 'floatingBio',
             'rows': 4,
-            # "cols": 60
             "placeholder": "Napište něco o sobě...",
         }),
     )

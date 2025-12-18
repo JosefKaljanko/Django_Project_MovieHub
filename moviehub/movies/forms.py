@@ -2,6 +2,7 @@ from django import forms
 from.models import Movie
 
 class MovieAddForm(forms.ModelForm):
+    """add Movie form """
     class Meta:
         model = Movie
         fields = "__all__"

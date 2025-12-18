@@ -7,6 +7,7 @@ class UserProfile(models.Model):
 
 
     def avatar_path(self, filename):
+        """cesta k avatar img"""
         return f"avatars/user_{self.user.id}/{filename}"
 
 

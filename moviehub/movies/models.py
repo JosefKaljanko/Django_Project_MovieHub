@@ -2,7 +2,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
-from datetime import datetime    # TADY TADY TADY TADY
+from datetime import datetime
 
 
 
@@ -23,13 +23,6 @@ class Genre(models.Model):
 
 
     def save(self, *args, **kwargs):
-        # """pokud neni slug > vygenerujeme si ho"""
-        # if not self.slug:
-        #     self.slug = slugify(self.name)
-        #
-        #
-        # if Genre.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
-        #     raise ValidationError(f"Slug '{self.slug}' exists! Can't create duplicity genre")
         """field validation + clean()"""
         self.full_clean()
         super().save(*args, **kwargs)
@@ -56,7 +49,6 @@ class Actor(models.Model):
         """surname duplicity control"""
         if self.surname and Actor.objects.filter(surname = self.surname).exclude(pk=self.pk).exists():
             raise ValidationError({"surname": f"Surname: '{self.surname}' already exists"})
-# TODO - musí tady být uprava metody save() když mi toto funguje a validuje v adminu ???
 
     def __str__(self):
         return f"{self.surname} {self.name}"

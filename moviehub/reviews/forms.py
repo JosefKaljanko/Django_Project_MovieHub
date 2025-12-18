@@ -3,7 +3,7 @@ from .models import Review
 
 
 class AddReviewForm(forms.ModelForm):
-    """formular pro pridani recenze"""
+    """formular pro pridani recenze (Neplatný)"""
     class Meta:
         model = Review
         fields = ["rating", "comment"]

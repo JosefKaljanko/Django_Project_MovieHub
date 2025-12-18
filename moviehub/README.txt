@@ -13,4 +13,6 @@ This is my Final_project for CodersLab
 
 ## author
 Josef Kaljanko
+
+for .env file contact me
 josefkaljanko@gmail.com
