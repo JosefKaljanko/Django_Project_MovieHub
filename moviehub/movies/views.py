@@ -162,7 +162,7 @@ class AddMovieView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = MovieAddForm
     template_name = "movies/add_movie.html"
     permission_required = "movies.add_movie"
-    permission_denied_message = "Nemáš oprávnění přidávat Filmy..."
+    # permission_denied_message = "Nemáš oprávnění přidávat Filmy..."
     # raise_exception = False
     # login_url = reverse_lazy("/all_movies/")
     # success_url = reverse_lazy("all_movies")
