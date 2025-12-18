@@ -1,0 +1,5 @@
+-r requirements_minimum.txt
+pytest==9.0.0
+pytest-django==4.11.1
+ipython==9.7.0
+rich==14.2.0
