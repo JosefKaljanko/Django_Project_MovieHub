@@ -1,25 +1,22 @@
-# from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CustomProfileEditForm, CusProfEditForm
-# update Profile
-# from django.views.generic import UpdateView
-
 from .models import User, UserProfile
 
 
 class RegisterView(View):
     """registrování nového uživatele."""
     def get(self,request):
-        # pozdeji form bootstrap
+        """zobrazí formular"""
         return render(request, "accounts/register.html")
 
     def post(self,request):
+        """zpracuje registraci a přihlásí uživatele."""
         username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -46,14 +43,14 @@ class RegisterView(View):
 
 @login_required
 def logout_view(request):
-    """Odhlaseni uzivatele"""
+    """Odhlaseni uzivatele a redirect na seznam vsech filmů"""
     logout(request)
     messages.info(request, "Byl jsi úspěšně odhlášen.")
     return redirect("all_movies")
 
 @login_required
 def profile(request):
-    """Detail profilu přihlášeného uživatele."""
+    """Zobrazí detail profilu přihlášeného uživatele."""
     context = {"user": request.user}
     return render(request, "accounts/profile.html",context)
 
@@ -62,13 +59,17 @@ def profile(request):
 #     fields = ["username", "email", "bio", "avatar"]
 #     template_name =
 
+@method_decorator(login_required, name="dispatch")
 class CustomProfileEdit(View):
+    """Zobrazí view pro upravu username/email přes User model"""
     def get(self, request):
+        """Zobrazí formular pro upravu username/email"""
         form = CustomProfileEditForm(instance=request.user)
         context = {"form":form}
         return render(request, "accounts/profile_edit_user.html",context)
 
     def post(self,request):
+        """Zpracuje formular"""
         # username = request.POST.get("username")
         # bio = request.POST.get("bio")
         # print(username)
@@ -80,14 +81,10 @@ class CustomProfileEdit(View):
         # conttext = {"mes":"dekujeme, data máme, pracujeme na tom..."}
         # return render(request, "accounts/profile_edit.html",conttext)
 
-        form = CustomProfileEditForm(
-            request.POST,
-            # request.FILES,
-            instance=request.user
-        )
+        form = CustomProfileEditForm(request.POST, instance=request.user)
 
         if form.is_valid():
-            # kontrola unikat. username idelane ve form/clean()
+            """kontrola unikat. username udelane ve form/clean()"""
             form.save()
             messages.success(request, "Profil (\"jméno\" a \"email\" byl uspěšně upraven .")
             return redirect("profile")
@@ -98,22 +95,18 @@ class CustomProfileEdit(View):
 
 @method_decorator(login_required, name="dispatch")    # ??????
 class CustomProfileEdit2(View):
-    """
-    druha varianta upravy prof. - jiny form(avatar,bio...)
-    """
+    """ View pro upravu bio/avatar """
     def get(self, request):
+        """ form pro bio/avatar """
         # form = CustomProfileEditForm(instance=request.user)
-        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        profile, _created = UserProfile.objects.get_or_create(user=request.user)
         form = CusProfEditForm(instance=profile)
         context = {"form":form}
         return render(request, "accounts/profile_edit.html",context)
 
     def post(self, request):
-        # username = request.POST.get("username")
-        # bio = request.POST.get("bio")
-        # print(username)
-        # print(bio)
-        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        """ Zpracuje form bio/avatar """
+        profile, _created = UserProfile.objects.get_or_create(user=request.user)
         form = CusProfEditForm(
             request.POST,
             request.FILES,
