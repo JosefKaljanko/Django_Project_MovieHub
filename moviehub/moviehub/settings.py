@@ -149,7 +149,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #login
 LOGIN_URL = '/login/' # kdyz neni prih
-LOGIN_REDIRECT_URL = '/' # po uspesnem prih
+LOGIN_REDIRECT_URL = '/movies/' # po uspesnem prih
 LOGOUT_REDIRECT_URL = '/' # kam po odhlaseni
 
 # MEDIA

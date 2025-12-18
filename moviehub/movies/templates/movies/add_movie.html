@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+MovieHub | Přidat Film
+{% endblock %}
+
+{% block css_styles %}
+    <style>
+      .card-img-top { aspect-ratio: 2/3; object-fit: cover; }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center my-4">
+      <div class="col-lg-7">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h1 class="h4 mb-3">Přidat Film</h1>
+
+            <form action="" method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                        	<div class="form-text">
+                                {{ field.help_text }}
+                            </div>
+                        {% endif %}
+                        {% for error in field.error %}
+                        	<div class="text-danger small">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+{#                        <button type="submit" class="btn btn-primary">Uložit</button>#}
+
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Uložit</button>
+            </form>
+          
+          </div> 
+        </div> 
+      </div>
+    </div>
+    
+    
+{#	<h1 class="h1">Add Movie:</h1>#}
+{##}
+{#    <form action="" method="post">#}
+{#    {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{##}
+{#    <button type="submit"> Uložit</button>#}
+{#    </form>#}
+{% endblock %}

@@ -15,16 +15,6 @@
 
 
 <body>
-{# OLD HEADER - DELETE#}
-{#    <header class="main-header">#}
-{#    <header class="">#}
-{#        <nav class="nav-bar">#}
-{#        <nav class="">#}
-{#            {% include 'particles/header.html' %}#}
-{#            {% include 'movies/particles/header.html' %}#}
-{#            {% include 'accounts/particles/login_or_logout.html' %}#}
-{#        </nav>#}
-{#    </header>#}
 
 {# NAVIGACE #}
 <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm"
@@ -59,9 +49,6 @@
                     </a>
                 </li>
               {% endfor %}
-
-{#            <li><a class="dropdown-item" href="#">Action</a></li>#}
-{#            <li><a class="dropdown-item" href="#">Another action</a></li>#}
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{% url 'genre' %}">All Category</a></li>
           </ul>
@@ -113,6 +100,7 @@
     {% endif %}
 
 {#      TODO OTHER: #}
+      {% if user.is_authenticated %}
       <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="" role="button"
              data-bs-toggle="dropdown" aria-expanded="false">
@@ -123,12 +111,15 @@
             <li><a class="dropdown-item" href="{% url 'about_page' %}">About</a></li>
             <li><a class="dropdown-item" href="{% url 'author_page' %}">Author</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{% url 'home_page' %}">Top 10 NOT FUNC</a></li>
-            <li><a class="dropdown-item" href="{% url 'home_page' %}">Add Movie</a></li>
+{#            <li><a class="dropdown-item" href="{% url 'home_page' %}">Top 10 NOT FUNC</a></li>#}
+                {% if perms.movies.add_movie %}
+                    <li><a class="dropdown-item" href="{% url 'add_movie' %}">Add Movie</a></li>
+                {% endif %}
             <li><a class="dropdown-item" href="{% url 'add_review' 12 %}">Add reviews TEST</a></li>
-            <li><a class="dropdown-item" href="{% url 'home_page' %}">WEB LOG</a></li>
+{#            <li><a class="dropdown-item" href="{% url 'home_page' %}">WEB LOG</a></li>#}
           </ul>
         </li>
+      {% endif %}
 
 
       </ul>

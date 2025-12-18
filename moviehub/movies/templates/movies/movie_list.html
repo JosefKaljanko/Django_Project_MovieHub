@@ -64,83 +64,88 @@ Movie List
         {# LEFT FILM GRID #}
         <div class="col-lg-9"> {# div co nastavuje šířku #}
 
-            {% if movies %}
+            {% if page_obj.object_list %}
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 {# row-cols-lg-4 #} row-cols-lg-3 g-4">
-                    {% for movie in movies %}
-                        <div class="col">
-                            <div class="card h-100 shadow-sm">
 
-                                {# Poster / fallback #}
-                                {% if movie.poster %}
-                                    {% if movie.poster.url %}
-                                        <img src="{{ movie.poster.url }}"
+                        {% for movie in page_obj %}
+                            <div class="col">
+                                <div class="card h-100 shadow-sm">
+
+                                    {# Poster / fallback #}
+                                    {% if movie.poster %}
+                                        {% if movie.poster.url %}
+                                            <img src="{{ movie.poster.url }}"
+                                                 class="card-img-top"
+                                                 alt="{{ movie.title }}">
+                                            {% else %}
+                                            <img src="{{ movie.poster }}"
+                                                 class="card-img-top"
+                                                 alt="{{ movie.title }}">
+                                        {% endif %}
+            {#                            <img src="{{ movie.poster.url }}" class="card-img-top" alt="{{ movie.title }}">#}
+                                    {% else %}
+            {#                          <img src="{% static 'img/default_movie_poster.jpg' %}" class="card-img-top" alt="{{ movie.title }}">#}
+                                        <svg
+{#                                             width="250px"#}
+{#                                             height="250px"#}
                                              class="card-img-top"
-                                             alt="{{ movie.title }}">
-                                        {% else %}
-                                        <img src="{{ movie.poster }}"
-                                             class="card-img-top"
-                                             alt="{{ movie.title }}">
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             stroke="#a3a3a3">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M17 17L21 21M21 17L17 21M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H13M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19M19 9V14" stroke="#878787" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                                     {% endif %}
-        {#                            <img src="{{ movie.poster.url }}" class="card-img-top" alt="{{ movie.title }}">#}
-                                {% else %}
-        {#                          <img src="{% static 'img/default_movie_poster.jpg' %}" class="card-img-top" alt="{{ movie.title }}">#}
-                                    <svg width="250px"
-                                         height="250px"
-                                         class="card-img-top"
-                                         viewBox="0 0 24 24"
-                                         fill="none"
-                                         xmlns="http://www.w3.org/2000/svg"
-                                         stroke="#a3a3a3">
-                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M17 17L21 21M21 17L17 21M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H13M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19M19 9V14" stroke="#878787" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-                                {% endif %}
 
-                                <div class="card-body d-flex flex-column">
-                                    <div class="d-flex justify-content-between align-items-start gap-2">
-                                        <h2 class="h6 mb-1">{{ movie.title }}</h2>
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <h2 class="h6 mb-1">{{ movie.title }}</h2>
 
-                                        {% if movie.avg_rating %}
-                                        <span class="badge text-bg-primary">⭐ {{ movie.avg_rating|floatformat:1 }}</span>
-                                        {% else %}
-                                        <span class="badge text-bg-secondary">--</span>
-                                        {% endif %}
-                                    </div>
-
-                                    <div class="mb-2">
-                                        {% if movie.release_date %}
-                                            <small class="text-muted">{{ movie.release_date|date:"Y" }}</small>
-                                        {% endif %}
-                                    </div>
-
-                                    {# ggenres #}
-                                    <div class="mb-2">
-                                        {% for genre in movie.genres.all %}
-                                            <span class="badge text-bg-dark me-1 mb-1">{{ genre.name }}</span>
-                                        {% empty %}
-                                            <span class="badge text-muted small">No genres</span>
-                                        {% endfor %}
-                                    </div>
-
-                                    <p class="text-muted small flex-grow-1 mb-3">
-                                        {{ movie.description|slice:100|safe }}
-                                            {% if movie.description|length > 100 %}
-                                                ....
+                                            {% if movie.avg_rating %}
+                                            <span class="badge text-bg-primary">⭐ {{ movie.avg_rating|floatformat:1 }}</span>
+                                            {% else %}
+                                            <span class="badge text-bg-secondary">--</span>
                                             {% endif %}
-        {#                                {{ movie.description }}#}
-                                    </p>
-                                    <div class="d-grid">
-                                        <a href="{% url 'movie_detail' movie.slug %}" class="btn btn-primary btn-sm">
-                                            Detail
-                                        </a>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            {% if movie.release_date %}
+                                                <small class="text-muted">{{ movie.release_date|date:"Y" }}</small>
+                                            {% endif %}
+                                        </div>
+
+                                        {# ggenres #}
+                                        <div class="mb-2">
+                                            {% for genre in movie.genres.all %}
+                                                <span class="badge text-bg-dark me-1 mb-1">{{ genre.name }}</span>
+                                            {% empty %}
+                                                <span class="badge text-muted small">No genres</span>
+                                            {% endfor %}
+                                        </div>
+
+                                        <p class="text-muted small flex-grow-1 mb-3">
+                                            {{ movie.description|truncatechars:110 }}
+                                            {% comment slice=truncatechars %}
+                                            {{ movie.description|slice:100 }}
+                                                {% if movie.description|length > 100 %}
+                                                    ....
+                                                {% endif %}
+                                                {% endcomment %}
+            {#                                {{ movie.description }}#}
+                                        </p>
+                                        <div class="d-grid">
+                                            <a href="{% url 'movie_detail' movie.slug %}" class="btn btn-primary btn-sm">
+                                                Detail
+                                            </a>
+                                        </div>
                                     </div>
+
                                 </div>
-
                             </div>
-                        </div>
 
-{#                    {% empty %}#}
+    {#                    {% empty %}#}
 
-                    {% endfor %}
-
+                        {% endfor %}
+{#                    {% endif %}#}
                 </div>
             {% else %}
                 <div class="alert alert-secondary">
@@ -149,10 +154,13 @@ Movie List
             {% endif %}
         </div>
 
-        {# RIGHT SIDEBAR TOP 10 #}
+
+
+        {# TOP 10 RIGHT SIDEBAR TOP 10 #}
         <div class="col-lg-3">
             {% if top_movies %}
-    	<div class="card shadow-sm">
+{#    	<div class="card shadow-sm">#}
+    	<div class="card shadow-sm sticky-top" style="top: 1rem;">
             <div class="card-body">
                 <h2 class="h6 mb-3">Top 10 rating</h2>
                 <ol class="list-group list-group-numbered list-group-flush">
@@ -215,5 +223,89 @@ Movie List
                 </ul>
         </div>
     {% endcomment %}
+
+    {# Number Pages Navigation #}
+    {% if page_obj.has_other_pages %}
+        	<nav class="mt-4" aria-label="Movies pagination">
+                <ul class="pagination justify-content-center">
+
+                    {# PREV #}
+{#                    <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">#}
+{#                        <a  href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}"#}
+{#                            class="page-link">#}
+{#                            Předchozí#}
+{#                        </a>#}
+{#                    </li>#}
+                    {% if page_obj.has_previous %}
+                    	<li class="page-item">
+                            <a  href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}"
+                                class="page-link">
+                                Předchozí
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Předchozí</span>
+                        </li>
+                    {% endif %}
+
+
+                    {# page numbers #}
+                {% comment page_num %}
+                    {% for num in page_obj.paginator.page_range %}
+                    	<li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                            <a  href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}"
+                                class="page-link">
+                                {{ num }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% endcomment %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% comment %}
+                            page_obj.paginator.num_pages = pocet stranek
+                            page_obj.number = soucasna stranka
+                        {% endcomment %}
+                        {% if page_obj.paginator.num_pages >= 7 and page_obj.number <= 4 and num <= 4 or num == 1 or num == page_obj.paginator.num_pages|add:"0" or num >= page_obj.number|add:"-1" and num <= page_obj.number|add:"1" %}
+{#                          {% if num == 1 or num == page_obj.paginator.num_pages or num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}#}
+
+                            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                <a  href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}"
+                                    class="page-link">
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% elif num == 2 and page_obj.number >= 4 %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% elif num == page_obj.paginator.num_pages|add:"-1" and page_obj.number <= page_obj.paginator.num_pages|add:"-3" %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {# NEXT #}
+{#                    <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">#}
+{#                        <a  href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}"#}
+{#                            class="page-link">#}
+{#                            Další#}
+{#                        </a>#}
+{#                    </li>#}
+                    {% if page_obj.has_next %}
+                    	<li class="page-item">
+                            <a  href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}"
+                                class="page-link">
+                                Další
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Další</span>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+        {% endif %}
 
 {% endblock %}

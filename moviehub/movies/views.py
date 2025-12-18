@@ -1,15 +1,22 @@
 from random import random, choice, choices
 
 from django.db.models.functions import Coalesce
+from django.forms import BaseForm
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
+from django.template.context_processors import request
+from django.urls import reverse_lazy
 from django.views import View
-from pygments.lexers import q
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
 from movies.models import Movie, Actor, Genre
 from reviews.forms import AddReviewForm, AddReviewForm2
 from django.db.models import Avg, Count, Value, FloatField
-from django.contrib import messages   # login
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from reviews.models import Review
+
+from django.core.paginator import Paginator
+from .forms import MovieAddForm
 
 
 def get_top_movies(limit=10):
@@ -26,6 +33,17 @@ class MovieListView(View):
     def get(self, request):
         # movies = Movie.objects.all()
         q = request.GET.get("q", "").strip()
+
+        # paginator _qs= queryset
+        page_number = request.GET.get("page", 1)
+        # misto movies movies_qs
+        movies_qs = (
+            Movie.objects.all()
+            .prefetch_related('genres')
+            .annotate(avg_rating=Avg('reviews__rating'))
+            .order_by('-id')
+        )
+
         movies = (
             Movie.objects.all()
             .prefetch_related('genres')
@@ -34,12 +52,18 @@ class MovieListView(View):
         )
 
         if q:
-            movies = movies.filter(title__icontains=q)
+            # movies = movies.filter(title__icontains=q)
+            movies_qs = movies_qs.filter(title__icontains=q)
 
+        paginator = Paginator(movies_qs, 9)
+        page_obj = paginator.get_page(page_number)
 
         category_menu = Genre.objects.all()
         context = {
-            "movies": movies,
+            # "movies": movies, # ---> ZRUSIT
+            "movies": page_obj.object_list, # volitelné
+            "page_obj": page_obj,
+            "paginator": paginator,
             "category_menu": category_menu,
             "q": q,
             "top_movies": get_top_movies(10),
@@ -131,4 +155,24 @@ class GenreDetailView(View):
             "top_movies": get_top_movies(10),
         }
         return render(request, "movies/genre_detail.html", context)
+
+
+class AddMovieView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    model = Movie
+    form_class = MovieAddForm
+    template_name = "movies/add_movie.html"
+    permission_required = "movies.add_movie"
+    permission_denied_message = "Nemáš oprávnění přidávat Filmy..."
+    # raise_exception = False
+    # login_url = reverse_lazy("/all_movies/")
+    # success_url = reverse_lazy("all_movies")
+
+    def get_success_url(self):
+        return reverse_lazy("movie_detail", kwargs={"slug": self.object.slug})
+
+    def handle_no_permission(self):
+        messages.warning(self.request,
+                         "Nemáš oprávnění přidávat Filmy..."
+                         )
+        return redirect("all_movies")
 
