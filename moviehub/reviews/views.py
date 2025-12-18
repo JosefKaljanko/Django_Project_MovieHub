@@ -45,25 +45,20 @@ def edit_review(request, pk=None):
     """Edit reviews = jen Autor"""
     review = get_object_or_404(Review, pk=pk, user=request.user)
 
-    # review = get_object_or_404(Review, pk=pk)
-    # if request.method == "GET":
-    #     return render(request, "reviews/edit_review.html", {"review": review})
-    # return None
-
     if request.method == "POST":
         form = AddReviewForm2(request.POST, instance=review)
-        if form.is_valid():
+        if form.is_valid() and form.has_changed():
             form.save()
             messages.success(request, "Recenze byla upravena.")
             return redirect("movie_detail", slug=review.movie.slug)
     else:
         form = AddReviewForm2(instance=review)
 
-        context = {
-            "form": form,
-            "review": review,
-            "movie": review.movie,
-        }
-        # return render(request,"reviews/edit_review.html", context)
+    context = {
+        "form": form,
+        "review": review,
+        "movie": review.movie,
+    }
     return render(request,"reviews/edit_review.html", context)
+    # return render(request,"reviews/edit_review.html", context)
 
