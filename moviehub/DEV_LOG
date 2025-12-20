@@ -80,6 +80,8 @@ Genre_detail edit
 přidané testy movies/tests
 
 git branch na conversation...
+.env add REDIS URL
+
 
 
 

@@ -34,6 +34,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "channels",
+    "chat",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +48,20 @@ INSTALLED_APPS = [
     "pages",
     "reviews",
 ]
+
+
+# asgi pro redis
+ASGI_APPLICATION = "moviehub.asgi.application"
+
+# redis
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"host": [REDIS_URL]},
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
