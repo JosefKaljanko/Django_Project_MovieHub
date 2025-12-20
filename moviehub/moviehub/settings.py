@@ -55,11 +55,12 @@ ASGI_APPLICATION = "moviehub.asgi.application"
 
 # redis
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+# REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"host": [REDIS_URL]},
+        "CONFIG": {"hosts": [REDIS_URL]},
     }
 }
 
