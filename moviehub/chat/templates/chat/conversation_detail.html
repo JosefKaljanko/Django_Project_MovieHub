@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<h2>
+        Soubromá konverzace
+        {% if other_user %}
+        	s {{ other_user.username }}
+        {% endif %}
+    </h2>
+
+    <div id="chat-box" style="border:1px solid #444; padding: 10px; height: 320px; overflow-y: auto; margin-bottom: 10px;">
+{#    historii naplni WS event "history"#}
+    </div>
+
+    <form action="" id="chat-form" style="display: flex; gap: 8px">
+        <input type="text" id="chat-input" placeholder="Napiš zprávu..." autocomplete="off" style="flex: 1;">
+        <button type="submit">Odeslat</button>
+    </form>
+
+    <script>
+    const wsKind = "{{ ws_kind }}";
+    const wsId = "{{ ws_id }}";
+    const currentUsername = "{{ request.user.username|escapejs }}";
+
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const socketUrl = `${protocol}://${window.location.host}/ws/chat/${wsKind}/${wsId}`;
+
+    const chatBox = document.getElementById("chat-box");
+    const chatForm = document.getElementById("chat-form");
+    const chatInput = document.getElementById("chat-input");
+
+    function appendMessage({sender, text, created_at}) {
+        const mine = sender === currentUsername;
+        const time = created_at ? new Date(created_at).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}) : "";
+
+        const p = document.createElement("p");
+        p.style.margin = "6px 0";
+        p.innerHTML = `<strong>${mine ? "Já" : sender}:</strong> ${text} <small style="color: #888;">${time}</small>`;
+        chatBox.appendChild(p);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    const socket = new WebSocket(socketUrl);
+
+    socket.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+
+        if (data.type === "history" && Array.isArray(data.messages)) {
+            chatBox.innerHTML = "";
+            data.messages.forEach(m => appendMessage(m));
+            return;
+        }
+
+        if (data.type === "message") {
+            appendMessage(data);
+        }
+    };
+
+    socket.onclose = () => {
+        appendMessage({sender:"System", text:"Spojení ukončeno.", created_at: null});
+    };
+
+    chatForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        if (socket.readyState !== WebSocket.OPEN) {
+            console.log("Socket není otevřený", socket.readyState);
+            return;
+        }
+
+        socket.send(JSON.stringify({ text }));
+        {#chatInput.value = "";#}
+    });
+    </script>
+
+{% endblock %}
