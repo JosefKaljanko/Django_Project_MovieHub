@@ -2,11 +2,21 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 
-from .models import Conversation
+from .models import Conversation, Message
 from movies.models import Movie
 
 User = get_user_model()
 
+@login_required
+def chat_home(request):
+    """
+    Zobrazí seznam konverzací kde je user účastníkem
+    """
+    conversations = Conversation.objects.filter(participants=request.user).order_by("-updated_at", "-id")
+
+    return render(request, "chat/chat_home.html", {
+        "conversations": conversations,
+    })
 
 @login_required
 def conversation_detail(request, conversation_id: int):
@@ -19,10 +29,11 @@ def conversation_detail(request, conversation_id: int):
 
     if not conversation.participants.filter(id=request.user.id).exists():
         # bezpečnost: cizí konverzaci neuvidí
-        return redirect("home_page")
+        return redirect("chat:chat_home")
 
     # protistrana (pro hezčí nadpis)
     other = conversation.participants.exclude(id=request.user.id).first()
+
 
     context = {
         "conversation": conversation,
@@ -57,4 +68,4 @@ def start_private_chat(request, user_id: int):
     """
     other = get_object_or_404(User, id=user_id)
     conversation, _ = Conversation.get_or_create_private(request.user, other)
-    return redirect("conversation_detail", conversation_id=conversation.id)
+    return redirect("chat:conversation_detail", conversation_id=conversation.id)

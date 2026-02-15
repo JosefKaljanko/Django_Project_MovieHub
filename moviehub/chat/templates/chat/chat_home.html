@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container py-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h1 class="h4 mb-0">Chat</h1>
+        </div>
+
+        {% if conversations %}
+            <div class="list-group">
+                {% for c in conversations %}
+                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                        href="{% if c.type == 'private' %}{% url 'chat:conversation_detail' c.id %}{% else %}{% url 'chat:movie_chat' c.movie_id %}{% endif %}">
+{#                       href="{% url 'chat:conversation_detail' c.id %}">#}
+                        <span>
+                            {% if c.type == 'private' %}
+                                {% for u in c.participants.all %}
+                                    {% if u.id != request.user.id %}
+                                        Chat s {{ u.username }}
+                                    {% endif %}
+                                {% endfor %}
+
+                            {% else %}
+                                Chat o {{ c.movie.title }}
+                            {% endif %}
+                            <span class="text-muted small ms-2">#{{ c.id }}</span>
+                        </span>
+
+                        <span class="text-muted small">Otevřít</span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+              Zatím nemáš žádné konverzace.
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+
+
+
+
+{##}
+{#	<h2>#}
+{#        Soubromá konverzace#}
+{#        {% if other_user %}#}
+{#        	s {{ other_user.username }}#}
+{#        {% endif %}#}
+{#    </h2>#}
+{##}
+{#    <div id="chat-box" style="border:1px solid #444; padding: 10px; height: 320px; overflow-y: auto; margin-bottom: 10px;">#}
+{#    historii naplni WS event "history"#}
+{#    </div>#}
+{##}
+{#    <form action="" id="chat-form" style="display: flex; gap: 8px">#}
+{#        <input type="text" id="chat-input" placeholder="Napiš zprávu..." autocomplete="off" style="flex: 1;">#}
+{#        <button type="submit">Odeslat</button>#}
+{#    </form>#}
+{##}
+{#    <script>#}
+{#    const wsKind = "{{ ws_kind }}";#}
+{#    const wsId = "{{ ws_id }}";#}
+{#    const currentUsername = "{{ request.user.username|escapejs }}";#}
+{##}
+{#    const protocol = window.location.protocol === "https:" ? "wss" : "ws";#}
+{#    const socketUrl = `${protocol}://${window.location.host}/ws/chat/${wsKind}/${wsId}`;#}
+{##}
+{#    const chatBox = document.getElementById("chat-box");#}
+{#    const chatForm = document.getElementById("chat-form");#}
+{#    const chatInput = document.getElementById("chat-input");#}
+{##}
+{#    function appendMessage({sender, text, created_at}) {#}
+{#        const mine = sender === currentUsername;#}
+{#        const time = created_at ? new Date(created_at).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}) : "";#}
+{##}
+{#        const p = document.createElement("p");#}
+{#        p.style.margin = "6px 0";#}
+{#        p.innerHTML = `<strong>${mine ? "Já" : sender}:</strong> ${text} <small style="color: #888;">${time}</small>`;#}
+{#        chatBox.appendChild(p);#}
+{#        chatBox.scrollTop = chatBox.scrollHeight;#}
+{#    }#}
+{##}
+{#    const socket = new WebSocket(socketUrl);#}
+{##}
+{#    socket.onmessage = (e) => {#}
+{#        const data = JSON.parse(e.data);#}
+{##}
+{#        if (data.type === "history" && Array.isArray(data.messages)) {#}
+{#            chatBox.innerHTML = "";#}
+{#            data.messages.forEach(m => appendMessage(m));#}
+{#            return;#}
+{#        }#}
+{##}
+{#        if (data.type === "message") {#}
+{#            appendMessage(data);#}
+{#        }#}
+{#    };#}
+{##}
+{#    socket.onclose = () => {#}
+{#        appendMessage({sender:"System", text:"Spojení ukončeno.", created_at: null});#}
+{#    };#}
+{##}
+{#    chatForm.addEventListener("submit", (e) => {#}
+{#        e.preventDefault();#}
+{#        const text = chatInput.value.trim();#}
+{#        if (!text) return;#}
+{##}
+{#        if (socket.readyState !== WebSocket.OPEN) {#}
+{#            console.log("Socket není otevřený", socket.readyState);#}
+{#            return;#}
+{#        }#}
+{##}
+{#        socket.send(JSON.stringify({ text }));#}
+        {#chatInput.value = "";#}
+{#    });#}
+{#    </script>#}
+{##}
+{#{% endblock %}#}

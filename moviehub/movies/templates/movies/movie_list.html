@@ -132,10 +132,12 @@ Movie List
                                                 {% endcomment %}
             {#                                {{ movie.description }}#}
                                         </p>
-                                        <div class="d-grid">
+                                        <div class="d-grid gap-2">
                                             <a href="{% url 'movie_detail' movie.slug %}" class="btn btn-primary btn-sm">
                                                 Detail
                                             </a>
+
+                                            <a class="btn btn-outline-primary btn-sm" href="{% url 'chat:movie_chat' movie.id %}">Chat o Filmu</a>
                                         </div>
                                     </div>
 

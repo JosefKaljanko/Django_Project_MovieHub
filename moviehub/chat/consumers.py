@@ -68,6 +68,10 @@ class ChatConsumers(AsyncWebsocketConsumer):
         payload = None
         try:
             payload = json.loads(text_data)
+            if isinstance(payload, str):
+                payload = {"text": payload}
+            elif not isinstance(payload, dict):
+                payload = {}
         except Exception:
             payload = {"text": text_data}
 
@@ -79,10 +83,11 @@ class ChatConsumers(AsyncWebsocketConsumer):
 
         event = {
             "type": "chat.message",
-            "id": msg["id"],
-            "sender": msg["sender"],
-            "text": msg["text"],
-            "created_at": msg["created_at"],
+                "id": msg["id"],
+                "sender": msg["sender"],
+                "text": msg["text"],
+                "created_at": msg["created_at"],
+
         }
         await self.channel_layer.group_send(self.group_name, event)
 
@@ -90,10 +95,11 @@ class ChatConsumers(AsyncWebsocketConsumer):
         """zprava ktera prisla ze skupiny se posle zpet klientovi"""
         # TEST
         # await self.send(text_data=event["message"])
+        event.pop("type", None)     # odstraní interní channels type
         await self.send(text_data=json.dumps(
             {
                 "type": "message",
-                **event
+                **event,
             }
         ))
 
@@ -149,5 +155,6 @@ class ChatConsumers(AsyncWebsocketConsumer):
                 "sender": m.sender.username,
                 "text": m.content,
                 "created_at": m.created_at.isoformat(),
-            }for m in msgs
+            }
+            for m in msgs
         ]

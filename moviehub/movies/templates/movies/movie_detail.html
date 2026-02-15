@@ -102,6 +102,10 @@
                 </div>
             </div>
 
+            <div class="card shadow-sm mb-4">
+                <a class="btn btn-outline-primary" href="{% url 'chat:movie_chat' movie.id %}">→ Chat o tomto Filmu ←</a>
+            </div>
+
             {# RECENZE #}
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
@@ -202,6 +206,7 @@
                     <a href="{% url 'login' %}" class="alert-link">přihlas</a>
                 </div>
             {% endif %}
+
 
         </div>
     </div>

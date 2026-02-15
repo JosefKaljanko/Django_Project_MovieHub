@@ -25,10 +25,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+def env_bool(name: str, default: bool = False) -> bool:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
 
-ALLOWED_HOSTS = []
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env_bool("DEBUG", default=False)
+
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+
 
 
 # Application definition
@@ -55,15 +62,16 @@ INSTALLED_APPS = [
 ASGI_APPLICATION = "moviehub.asgi.application"
 
 # redis
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
+# REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")        # 15.2.26 uprava ↑
 # REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            # "hosts": [REDIS_URL]
-            "hosts": [os.getenv("REDIS_URL", "redis://127.0.0.1:6379")],
+            "hosts": [REDIS_URL]
+            # "hosts": [os.getenv("REDIS_URL", "redis://127.0.0.1:6379")],
         },
         # "CONFIG": {"hosts": [("127.0.0.1", 6379)]},
     }

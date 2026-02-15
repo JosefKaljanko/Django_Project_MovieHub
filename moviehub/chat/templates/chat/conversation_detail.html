@@ -2,7 +2,7 @@
 
 {% block content %}
 	<h2>
-        Soubromá konverzace
+        Soukromá konverzace
         {% if other_user %}
         	s {{ other_user.username }}
         {% endif %}
@@ -23,7 +23,7 @@
     const currentUsername = "{{ request.user.username|escapejs }}";
 
     const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const socketUrl = `${protocol}://${window.location.host}/ws/chat/${wsKind}/${wsId}`;
+    const socketUrl = `${protocol}://${window.location.host}/ws/chat/${wsKind}/${wsId}/`;
 
     const chatBox = document.getElementById("chat-box");
     const chatForm = document.getElementById("chat-form");
@@ -71,7 +71,8 @@
         }
 
         socket.send(JSON.stringify({ text }));
-        {#chatInput.value = "";#}
+        chatInput.value = "";
+        chatInput.focus();
     });
     </script>
 
