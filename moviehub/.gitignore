@@ -12,6 +12,7 @@ db.sqlite3
 
 # .env security file
 .env
+.env.local
 # env anywhere
 **/.env
 
