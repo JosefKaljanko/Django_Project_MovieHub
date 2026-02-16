@@ -34,3 +34,9 @@ application = ProtocolTypeRouter(
         ),
     }
 )
+
+#  static file servirovani
+from django.conf import settings
+if settings.DEBUG:
+    from django.contrib.staticfiles.handlers import ASGIStaticFilesHandler
+    application = ASGIStaticFilesHandler(application)
