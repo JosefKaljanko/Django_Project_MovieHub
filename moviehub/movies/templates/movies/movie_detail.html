@@ -26,23 +26,7 @@
                                          alt="{{ movie.title }}"
                                          class="img-fluid rounded">
                                 {% endif %}
-
-                            {% comment %}
-{#                                TODO movie.poster & movie.poster.url  #}
-                                <img src="{{ movie.poster.url }}" 
-                                     alt="{{ movie.title }}"
-                                     class="img-fluid rounded">
-                             {% endcomment %}
-
-                        {% comment %}
                             {% else %}
-                                <img src="{% static 'img/default_movie_poster.jpg' %}"
-                                     alt="{{ movie.title }}"
-                                     class="img-fluid rounded">
-                            {% endif %}
-                        {% endcomment %}
-                            {% else %}
-{#                                <img src="" alt="">#}
                                 <svg width="100px" height="100px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#a3a3a3"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M17 17L21 21M21 17L17 21M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H13M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19M19 9V14" stroke="#878787" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                             {% endif %}
                         </div>
@@ -211,71 +195,4 @@
         </div>
     </div>
 
-{% comment %}
-        {# ORIGINAL ORIGINAL #}
-            <h1>Detail Filmu: </h1>
-            <h2>{{ movie.title }}</h2>
-            <li>Year:
-                {% if movie.release_date %}
-                    {{ movie.release_date|date:"Y" }}</li>
-                {% else %}
-                    <em>Unknown</em>
-                {% endif %}
-            <li>Genre:
-            {% for genre in movie.genres.all %}
-                {{ genre.name }}{% if not forloop.last %}, {% endif %}
-            {% empty %}
-                <em>No genres</em>
-            {% endfor %}
-            </li>
-            <li>Rating:
-                {% if avg_rating %}
-                    {{ avg_rating|floatformat:2 }}
-                {% else %}
-                    <em>No reviews to calculate rating.</em>
-                {% endif %}
-            </li>
-            <li>
-            Actors:
-            {% for actor in movie.actors.all %}
-                {{ actor }}{% if not forloop.last %},{% endif %}{% if forloop.last %}.{% endif %}
-            {% empty %}
-                <em>No data about actors.</em>
-            {% endfor %}
-            </li>
-            <p>{{ movie.description }}</p>
-
-            <h1>Reviews:</h1>
-            <ul>
-                {% for review in movie.reviews.all %}
-                    <li>
-                    {{ review.user }}: {{ review.comment }} ({{ review.rating }}/10)
-                    {{ reviews }}
-                    </li>
-                {% empty %}
-                    <li style="color: firebrick"><h3>No reviews.</h3></li>
-                {% endfor %}
-            </ul>
-
-            {# TODO -> POUZE PRO PRIHLASENE!!!! pouze pokud neni review -> DODELAT #}
-            {% if user.is_authenticated %}
-                <form action="{% url 'add_review' movie.id %}" method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                    <div class="">
-                        <button class="btn btn-primary mb-3" type="submit">Add Review</button>
-                    </div>
-
-                </form>
-            {% else %}
-            {#    <p><a href="{% url 'login' %}">Login to add reviews</a></p>#}
-                <p><a href="/accounts/login/" class="btn btn-primary mb-2">Login to add reviews</a></p>
-            {% endif %}
-
-
-
-
-
-            {#    {{ form }}#}
-{% endcomment %}
 {% endblock %}

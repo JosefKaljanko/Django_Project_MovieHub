@@ -1,5 +1,4 @@
 from django.utils import timezone
-from django.db.models import Q
 from django.conf import settings
 from django.db import models
 from movies.models import Movie
@@ -9,10 +8,10 @@ User = settings.AUTH_USER_MODEL
 class Conversation(models.Model):
     class Type(models.TextChoices):
         PRIVATE = "private", "Private"
-        # PUBLIC = "public", "Public"
         MOVIE = "movie", "Movie"
 
     type = models.CharField(max_length=20, choices=Type.choices)
+
     # pro MOVIE konverzaci
     movie = models.ForeignKey(Movie, null=True, blank=True,
                                      on_delete=models.CASCADE,

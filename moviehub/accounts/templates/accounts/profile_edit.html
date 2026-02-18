@@ -9,25 +9,9 @@
     <div class="container my-5">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
-
-{#                <h1 class="h4 mb-4 text-center">Upravit bio & avatar:</h1>#}
-            {% comment %}
-                {# BOOTSTRAP ALERTS PRO MESSAGES #}
-                {% if messages %}
-                	{% for message in messages %}
-                		<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                	{% endfor %}
-                {% endif %}
-            {% endcomment %}
-
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h2 class="h4 mb-4 text-center">Upravit bio & avatar:</h2>
-
-{#                        <hr>#}
                         {% if messages %}
                         	{% for message in messages %}
                                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -39,6 +23,7 @@
 
                         <form action="" method="post" enctype="multipart/form-data" novalidate>
                             {% csrf_token %}
+
                             {# BIO #}
                             <div class="mb-3">
                                 <label for="floatingBio" class="form-label">{{ form.bio.label }}</label>
@@ -68,8 +53,6 @@
                                 {% endif %}
                             </div>
 
-                        {#    {{ form.as_p }}#}
-
                             {% if form %}
                                 <button type="submit" class="btn btn-primary w-100">
 {#                                    <p>profile_edit.html</p>#}
@@ -77,10 +60,6 @@
                                 </button>
                             {% endif %}
                             </form>
-
-{#                            {% if mes %}#}
-{#                                {{ mes }}#}
-{#                            {% endif %}#}
                             <div class="mt-3 text-center">
                                 <a href="{% url 'profile' %}">Zpět na profil</a>
                             </div>

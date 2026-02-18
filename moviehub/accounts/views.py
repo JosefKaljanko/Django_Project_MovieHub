@@ -2,9 +2,8 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CustomProfileEditForm, CusProfEditForm
 from .models import User, UserProfile
 
@@ -54,10 +53,6 @@ def profile(request):
     context = {"user": request.user}
     return render(request, "accounts/profile.html",context)
 
-# class ProfileEditView(LoginRequiredMixin, UpdateView):
-#     model = User
-#     fields = ["username", "email", "bio", "avatar"]
-#     template_name =
 
 @method_decorator(login_required, name="dispatch")
 class CustomProfileEdit(View):
@@ -70,16 +65,6 @@ class CustomProfileEdit(View):
 
     def post(self,request):
         """Zpracuje formular"""
-        # username = request.POST.get("username")
-        # bio = request.POST.get("bio")
-        # print(username)
-        # print(bio)
-        # if User.objects.filter(username=username).exclude(pk=request.user.pk).exists():
-        #     print(f"{username} is already registered.")
-        #     return render(request, "accounts/profile_edit.html",context={"form":CustomProfileEditForm(), "mes":"Username už existuje!!"})
-        #
-        # conttext = {"mes":"dekujeme, data máme, pracujeme na tom..."}
-        # return render(request, "accounts/profile_edit.html",conttext)
 
         form = CustomProfileEditForm(request.POST, instance=request.user)
 
@@ -93,12 +78,11 @@ class CustomProfileEdit(View):
         context = {"form":form}
         return render(request, "accounts/profile_edit_user.html",context)
 
-@method_decorator(login_required, name="dispatch")    # ??????
+@method_decorator(login_required, name="dispatch")
 class CustomProfileEdit2(View):
     """ View pro upravu bio/avatar """
     def get(self, request):
         """ form pro bio/avatar """
-        # form = CustomProfileEditForm(instance=request.user)
         profile, _created = UserProfile.objects.get_or_create(user=request.user)
         form = CusProfEditForm(instance=profile)
         context = {"form":form}
@@ -110,7 +94,6 @@ class CustomProfileEdit2(View):
         form = CusProfEditForm(
             request.POST,
             request.FILES,
-            # instance=request.user.userprofile,
             instance=profile,
         )
 

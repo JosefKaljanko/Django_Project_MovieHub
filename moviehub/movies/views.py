@@ -3,8 +3,8 @@ from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
-from movies.models import Movie, Actor, Genre
+from django.views.generic import CreateView
+from movies.models import Movie, Genre
 from reviews.forms import AddReviewForm2
 from django.db.models import Avg, Count, Value, FloatField
 from django.contrib import messages
@@ -161,10 +161,6 @@ class AddMovieView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = MovieAddForm
     template_name = "movies/add_movie.html"
     permission_required = "movies.add_movie"
-    # permission_denied_message = "Nemáš oprávnění přidávat Filmy..."
-    # raise_exception = False
-    # login_url = reverse_lazy("/all_movies/")
-    # success_url = reverse_lazy("all_movies")
 
     def get_success_url(self):
         """po vytvoření redirect na detail noveho filmu"""

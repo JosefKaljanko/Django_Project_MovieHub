@@ -1,5 +1,3 @@
-
-
 from django.urls import path
 from .views import (MovieListView,MovieDetailView,
                     GenreListView, GenreDetailView,
@@ -12,6 +10,4 @@ urlpatterns = [
     path('genres/<slug:slug>', GenreDetailView.as_view(), name="genre_detail"),
     path('genres/', GenreListView.as_view(), name="genre"),
     path('add-movie/', AddMovieView.as_view(), name="add_movie"),
-    # path('', func, name=""),
-
 ]

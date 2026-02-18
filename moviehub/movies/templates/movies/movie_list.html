@@ -13,40 +13,6 @@ Movie List
 
 {% block content %}
 
-    {% comment top_movies_big_ver %}
-    {% if top_movies %}
-    	<div class="card shadow-sm">
-            <div class="card-body">
-                <h2 class="h6 mb-3">Top 10 rating</h2>
-                <ol class="list-group list-group-numbered list-group-flush">
-                    {% for m in top_movies %}
-                    	<li class="list-group-item d-flex justify-content-between align-items-start">
-                            <div class="me-3">
-                                <a href="{% url 'movie_detail' m.slug %}" class="text-decoration-none">
-                                    {{ m.title }}
-                                </a>
-                                        {% if m.release_date %}
-                                	        <span class="badge text-muted text-decoration-none">{{ m.release_date|date:"Y" }}</span>
-                                        {% endif %}
-
-
-                                {% if m.release_date %}
-                                	<div class="small text-muted text-center">{{ m.release_date|date:"Y" }}</div>
-                                {% endif %}
-                            </div>
-                            <span class="badge text-bg-primary rounded-pill">
-                                ⭐ {{ m.avg_rating|floatformat:1 }}
-                            </span>
-                        </li>
-                    {% endfor %}
-
-                </ol>
-            </div>
-        </div>
-    {% endif %}
-    {% endcomment %}
-
-
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
         <div>
             <h1 class="h3 mb-0">Filmy</h1>
@@ -62,7 +28,7 @@ Movie List
     <div class="row g-4">
 
         {# LEFT FILM GRID #}
-        <div class="col-lg-9"> {# div co nastavuje šířku #}
+        <div class="col-lg-9">
 
             {% if page_obj.object_list %}
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 {# row-cols-lg-4 #} row-cols-lg-3 g-4">
@@ -82,12 +48,9 @@ Movie List
                                                  class="card-img-top"
                                                  alt="{{ movie.title }}">
                                         {% endif %}
-            {#                            <img src="{{ movie.poster.url }}" class="card-img-top" alt="{{ movie.title }}">#}
+
                                     {% else %}
-            {#                          <img src="{% static 'img/default_movie_poster.jpg' %}" class="card-img-top" alt="{{ movie.title }}">#}
                                         <svg
-{#                                             width="250px"#}
-{#                                             height="250px"#}
                                              class="card-img-top"
                                              viewBox="0 0 24 24"
                                              fill="none"
@@ -113,7 +76,7 @@ Movie List
                                             {% endif %}
                                         </div>
 
-                                        {# ggenres #}
+                                        {# genres #}
                                         <div class="mb-2">
                                             {% for genre in movie.genres.all %}
                                                 <span class="badge text-bg-dark me-1 mb-1">{{ genre.name }}</span>
@@ -124,13 +87,6 @@ Movie List
 
                                         <p class="text-muted small flex-grow-1 mb-3">
                                             {{ movie.description|truncatechars:110 }}
-                                            {% comment slice=truncatechars %}
-                                            {{ movie.description|slice:100 }}
-                                                {% if movie.description|length > 100 %}
-                                                    ....
-                                                {% endif %}
-                                                {% endcomment %}
-            {#                                {{ movie.description }}#}
                                         </p>
                                         <div class="d-grid gap-2">
                                             <a href="{% url 'movie_detail' movie.slug %}" class="btn btn-primary btn-sm">
@@ -144,10 +100,8 @@ Movie List
                                 </div>
                             </div>
 
-    {#                    {% empty %}#}
 
                         {% endfor %}
-{#                    {% endif %}#}
                 </div>
             {% else %}
                 <div class="alert alert-secondary">
@@ -161,7 +115,6 @@ Movie List
         {# TOP 10 RIGHT SIDEBAR TOP 10 #}
         <div class="col-lg-3">
             {% if top_movies %}
-{#    	<div class="card shadow-sm">#}
     	<div class="card shadow-sm sticky-top" style="top: 1rem;">
             <div class="card-body">
                 <h2 class="h6 mb-3">Top 10 rating</h2>
@@ -172,15 +125,12 @@ Movie List
                                 <a href="{% url 'movie_detail' m.slug %}" class="text-decoration-none">
                                     {{ m.title }}
                                 </a>
-{#                                        {% if m.release_date %}#}
-{#                                	        <span class="badge text-muted text-decoration-none">{{ m.release_date|date:"Y" }}</span>#}
-{#                                        {% endif %}#}
-
 
                                 {% if m.release_date %}
                                 	<div class="small text-muted text-center">{{ m.release_date|date:"Y" }}</div>
                                 {% endif %}
                             </div>
+
                             <span class="badge text-bg-primary rounded-pill">
                                 ⭐ {{ m.avg_rating|floatformat:1 }}
                             </span>
@@ -201,43 +151,12 @@ Movie List
         </div>
 
     </div>
-        {% comment %}
-        <div class="all-movies original">
-            <h1>Movie list:</h1>
-            <p>Filter BY: {{ sortform }}</p>
-                <ul>
-                    {% for movie in movies %}
-                        <li class="film-title-container">
-    {#                        {{ movie.title }} - {{ movie.release_date|date:"Y/m/d c b j l o W F z" }}#}
-                            {{ movie.title }} - {{ movie.release_date|date:"Y"|pprint }}
-                        </li>
-    {#                    <p>{{ movie.title }}</p>#}
-    {#                    <p>{{ movie.slug }}</p>#}
-                        <p class="film-title-button">
-                            <a class="button" href="{% url 'movie_detail' movie.slug %}">Detail</a> |
-                            <a class="button" href="{% url 'add_review' movie.id %}">Add Review</a>
-                        </p>
-    {#                        <a class="button" href="">Add Review</a>#}
-                        {% empty %}
-                            <h3>V DATABÁZI NEJSOU ŽÁDNÉ FILMY</h3>
-            {#            <li><a href="{% url 'add_review' movie.id %}">add review</a></li>#}
-                    {% endfor %}
-                </ul>
-        </div>
-    {% endcomment %}
 
     {# Number Pages Navigation #}
     {% if page_obj.has_other_pages %}
         	<nav class="mt-4" aria-label="Movies pagination">
                 <ul class="pagination justify-content-center">
 
-                    {# PREV #}
-{#                    <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">#}
-{#                        <a  href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}"#}
-{#                            class="page-link">#}
-{#                            Předchozí#}
-{#                        </a>#}
-{#                    </li>#}
                     {% if page_obj.has_previous %}
                     	<li class="page-item">
                             <a  href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}"
@@ -251,27 +170,8 @@ Movie List
                         </li>
                     {% endif %}
 
-
-                    {# page numbers #}
-                {% comment page_num %}
                     {% for num in page_obj.paginator.page_range %}
-                    	<li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                            <a  href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}"
-                                class="page-link">
-                                {{ num }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                {% endcomment %}
-
-                    {% for num in page_obj.paginator.page_range %}
-                        {% comment %}
-                            page_obj.paginator.num_pages = pocet stranek
-                            page_obj.number = soucasna stranka
-                        {% endcomment %}
                         {% if page_obj.paginator.num_pages >= 7 and page_obj.number <= 4 and num <= 4 or num == 1 or num == page_obj.paginator.num_pages|add:"0" or num >= page_obj.number|add:"-1" and num <= page_obj.number|add:"1" %}
-{#                          {% if num == 1 or num == page_obj.paginator.num_pages or num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}#}
-
                             <li class="page-item {% if page_obj.number == num %}active{% endif %}">
                                 <a  href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}"
                                     class="page-link">
@@ -287,12 +187,6 @@ Movie List
                     {% endfor %}
 
                     {# NEXT #}
-{#                    <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">#}
-{#                        <a  href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}"#}
-{#                            class="page-link">#}
-{#                            Další#}
-{#                        </a>#}
-{#                    </li>#}
                     {% if page_obj.has_next %}
                     	<li class="page-item">
                             <a  href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}"

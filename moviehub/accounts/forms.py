@@ -1,9 +1,7 @@
 from django import forms
-# login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from .models import UserProfile
-from django.core.validators import EmailValidator
 
 
 
@@ -53,20 +51,6 @@ class CustomProfileEditForm(forms.ModelForm):
             "placeholder": "name@example.com",
         }),
     )
-    # email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control'}),
-    #                          validators=[EmailValidator()],
-    #                          help_text="Zde zadejte váš platný email.")
-
-    # BIO NENI V MODELU USER!!!
-    # bio = forms.CharField(label="O vás:",
-    #                       widget=forms.Textarea(attrs={
-    #                           'class': 'form-control',
-    #                           'id': 'floatingBio',
-    #                           'rows': 4,
-    #                           "cols": 60
-    #                       }),
-    #
-    #                         help_text="Zde zadejte stručný popis o vás.",)
 
     class Meta:
         model = User
@@ -81,7 +65,6 @@ class CustomProfileEditForm(forms.ModelForm):
 
 
 # -----> EDIT PROF bio, avatar <-----
-# TODO udelat upravu profilu username -> model:1; bio a avatar -> model:2
 class CusProfEditForm(forms.ModelForm):
     """edit form bio/avatar"""
     bio = forms.CharField(
@@ -96,9 +79,7 @@ class CusProfEditForm(forms.ModelForm):
         }),
     )
 
-    #
-    #                       )
-    #
+
     avatar = forms.ImageField(
         required=False,
         label="Profilový Obrázek",
@@ -110,5 +91,3 @@ class CusProfEditForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         exclude = ('user',)
-        # alternativne
-        # fields = ("bio", "avatar")

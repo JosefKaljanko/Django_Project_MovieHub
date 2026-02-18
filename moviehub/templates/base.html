@@ -116,12 +116,10 @@
             <li><a class="dropdown-item" href="{% url 'about_page' %}">About</a></li>
             <li><a class="dropdown-item" href="{% url 'author_page' %}">Author</a></li>
             <li><hr class="dropdown-divider"></li>
-{#            <li><a class="dropdown-item" href="{% url 'home_page' %}">Top 10 NOT FUNC</a></li>#}
                 {% if perms.movies.add_movie %}
                     <li><a class="dropdown-item" href="{% url 'add_movie' %}">Add Movie</a></li>
                 {% endif %}
             <li><a class="dropdown-item" href="{% url 'add_review' 12 %}">Add reviews TEST</a></li>
-{#            <li><a class="dropdown-item" href="{% url 'home_page' %}">WEB LOG</a></li>#}
           </ul>
         </li>
       {% endif %}
@@ -136,12 +134,6 @@
           </button>
       </div>
 
-{% comment header search  %}
-      <form class="d-flex ms-3" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-{% endcomment %}
     </div>
   </div>
 </nav>

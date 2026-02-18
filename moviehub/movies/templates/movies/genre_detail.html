@@ -111,40 +111,10 @@
                 	<div class="alert alert-info">
                         Vyber žánr.
                     </div>
-{#                {% else %}#}
-{#                    <div class="alert alert-secondary">#}
-{#                        Žádné žánry k dispozici.#}
-{#                    </div>#}
                 {% endif %}
 
             {% endif %}
         </div>
     </div>
 
-
-{% comment original %}
-    {% if genre %}
-	<h1>{{ genre.name }}</h1>
-    <ul>
-    {% for mov in movies %}
-    	<li><a href="{% url 'movie_detail' mov.slug %}">{{ mov.title }} ({{ mov.release_date }})</a></li>
-    {% empty %}
-    	<li>Žádné filmy v tomto žánru.</li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-
-
-    {% if genres_list %}
-        <h1>Žánry na výběr:</h1>
-        <ul>
-        {% for g in genres_list %}
-        	<li><a href="{% url 'genre_detail' g.slug %}">{{ g }}</a></li>
-        {% empty %}
-        	<li>NO G.</li>
-        {% endfor %}
-        </ul>
-
-    {% endif %}
-{% endcomment %}
 {% endblock %}

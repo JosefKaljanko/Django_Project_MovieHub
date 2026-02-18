@@ -1,9 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, Q, Aggregate
+from django.db.models import Avg, Aggregate
 from django.contrib import messages
-
-from .forms import AddReviewForm, AddReviewForm2
+from .forms import AddReviewForm2
 from .models import Review
 from movies.models import Movie
 
@@ -60,5 +59,4 @@ def edit_review(request, pk=None):
         "movie": review.movie,
     }
     return render(request,"reviews/edit_review.html", context)
-    # return render(request,"reviews/edit_review.html", context)
 

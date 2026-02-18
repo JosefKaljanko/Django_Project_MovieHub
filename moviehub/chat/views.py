@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-
-from .models import Conversation, Message
+from .models import Conversation
 from movies.models import Movie
+
 
 User = get_user_model()
 

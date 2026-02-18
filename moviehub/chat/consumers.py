@@ -1,15 +1,11 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-# from django.contrib.auth.models import AnonymousUser
-
 from .models import Conversation, Message
 from movies.models import Movie
 
+
 class ChatConsumers(AsyncWebsocketConsumer):
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(args, kwargs)
-    #     self.room_group_name = None
 
     async def connect(self):
         user = self.scope.get("user")
@@ -48,22 +44,11 @@ class ChatConsumers(AsyncWebsocketConsumer):
         ))
 
     async def disconnect(self, close_code):
-        # TEST
-        # await self.channel_layer.group_discard(
-        #     self.room_group_name,
-        #     self.channel_name
-        # )
 
         if hasattr(self, "group_name"):
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def receive(self, text_data):
-        # TEST
-        # """kdyz klient posle zpravu, posleme ji do skupiny"""
-        # await self.channel_layer.group_send(
-        #     self.room_group_name,
-        #     {"type": "chat.message", "message": text_data}
-        # )
 
         payload = None
         try:
@@ -87,14 +72,12 @@ class ChatConsumers(AsyncWebsocketConsumer):
                 "sender": msg["sender"],
                 "text": msg["text"],
                 "created_at": msg["created_at"],
-
         }
+
         await self.channel_layer.group_send(self.group_name, event)
 
     async def chat_message(self, event):
         """zprava ktera prisla ze skupiny se posle zpet klientovi"""
-        # TEST
-        # await self.send(text_data=event["message"])
         event.pop("type", None)     # odstraní interní channels type
         await self.send(text_data=json.dumps(
             {
@@ -110,7 +93,6 @@ class ChatConsumers(AsyncWebsocketConsumer):
         if not movie:
             return None
         conv, _ = Conversation.get_or_create_movie(movie)
-        # movie chat je "public" pro prihl., membership nepoužíváme
         return conv
 
 

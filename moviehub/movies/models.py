@@ -1,9 +1,6 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
-from datetime import datetime
-
 
 
 class Genre(models.Model):
@@ -43,7 +40,7 @@ class Actor(models.Model):
     """
     name = models.CharField(max_length=30)
     surname = models.CharField(max_length=30)
-    bio = models.TextField(blank=True) # blank znamená ze pole nemusi byt vyplneno
+    bio = models.TextField(blank=True)
 
     def clean(self):
         """surname duplicity control"""
@@ -60,14 +57,9 @@ class Actor(models.Model):
 
 class Movie(models.Model):
     """Model filmu"""
-    # objects = None
     title = models.CharField(max_length=100)
     description = models.TextField()
-    release_date = models.DateField()  # TADY TADY TADY TADY
-    # release_year = models.PositiveIntegerField(
-    #     validators=[MinValueValidator(1920),
-    #                 MaxValueValidator(datetime.now().year)]
-    # )  # TADY TADY TADY TADY
+    release_date = models.DateField()
     slug = models.SlugField(unique=True, blank=True, max_length=125, db_index=True)
     genres = models.ManyToManyField(Genre, related_name="movies")
     actors = models.ManyToManyField(Actor,related_name="movies")
@@ -81,9 +73,6 @@ class Movie(models.Model):
 
         if self.slug and Movie.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
             raise ValidationError({"slug": f"Slug: '{self.slug}' already exists"})
-
-        # if not self.poster_image and self.poster_url:
-        #     raise ValidationError({"poster_url":"Zadej poster URL nebo nahraj obrázek."})
 
     @property
     def poster(self):
