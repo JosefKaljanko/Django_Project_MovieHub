@@ -1,17 +1,81 @@
 # Introduction 
 
-### MovieHub
-    Modern Django webová aplikace pro správu a hodnocení filmů.
-    Projekt běží v Docker prostředí s PostgreSQL a Redis.
+# 🎬 MovieHub
+Modern Django webová aplikace pro správu a hodnocení filmů.
+Projekt běží v Docker prostředí s PostgreSQL a Redis.
+
+## 📸 Screenshots
+###### Homepage
+![Homepage](docs/movies_.png)
+
+##### Profile
+![Profile](docs/profile.png)
+##### Add movie (only with permission)
+![Add movie](docs/add_movie.png)
+##### Movie detail
+![Movie detail](docs/movie_detail.png)
+
+[//]: # (![Chat]&#40;docs/chat.png&#41;)
+[//]: # (![Admin]&#40;docs/admin.png&#41;)
+
+## Features
+- Registrace a přihlášení uživatelů
+- Přidávání filmů
+- Hodnocení filmů (1–10)
+- 1 uživatel = 1 recenze na film
+- Reálný chat pomocí Django Channels + Redis
+- Admin rozhraní
+
+## Architecture
+- Django (ASGI)
+- Daphne server
+- Redis (Channels layer)
+- PostgreSQL
+- Nginx reverse proxy
+- Docker Compose orchestrace
+
+## Environment
+
+Development:
+- DEBUG=1
+- Django runserver / Daphne
+
+Production:
+- DEBUG=0
+- Nginx reverse proxy
+- Daphne
+- Docker
+
+
+ ## Environment
+
+Development:
+- DEBUG=1
+- Django runserver / Daphne
+
+Production:
+- DEBUG=0
+- Nginx reverse proxy
+- Daphne
+- Docker
 
 # Technologie
     Python 3.13
     Django
-    PostgreSQL
+    PostgreSQL 17
     Redis
     Django Channels
+    Daphne
     Docker & Docker Compose
+    Nginx (reverse proxy)
 
+## Run with Docker
+    docker compose up --build
+##### Acces:
+    http://localhost:8000
+
+## Run Locally
+    python manage.py runserver 8014
 
 # Spuštění projektu (doporučeno – přes Docker)
 
@@ -19,11 +83,12 @@
 ###### Docker desktop
     docker --version
     docker compose version
+
 ###### Git/Git clone
     git clone https://github.com/JosefKaljanko/Django_Project_MovieHub.git
     cd Django_Project_MovieHub/moviehub
 
-### Vytvoření .env:
+### Create .env (Docker); .env.local (Django runserver):
     DEBUG = 1
     SECRET_KEY=super-secret-key
     POSTGRES_DB=moviehub
@@ -53,7 +118,7 @@
 
 ## Docker container
 
-##### Spuštění
+##### Run
     • First Run
     docker compose up --build
 
@@ -62,7 +127,7 @@
           or
     docker compose up -d          # na pozadí
 
-##### Zastavení
+##### Stop
     • Stop project
     docker compose down
 
@@ -122,11 +187,14 @@
 ### author
 ## Josef Kaljanko
 
-## Run project with chat app
+[//]: # (## Run project with chat app)
 
 [//]: # (PowerShell:)
 [//]: # (cd moviehub)
 [//]: # (daphne -b 127.0.0.1 -p 8015 moviehub.asgi:application)
 
-for .env file contact me
-josefkaljanko@gmail.com
+## Environment variables
+
+Example `.env` file is shown above.
+Never commit real secrets to Git.
+
