@@ -8,11 +8,13 @@ Projekt běží v Docker prostředí s PostgreSQL a Redis.
 ###### Homepage
 ![Homepage](docs/movies_.png)
 
-##### Profile
+###### Profile
 ![Profile](docs/profile.png)
-##### Add movie (only with permission)
+
+###### Add movie (only with permission)
 ![Add movie](docs/add_movie.png)
-##### Movie detail
+
+###### Movie detail
 ![Movie detail](docs/movie_detail.png)
 
 [//]: # (![Chat]&#40;docs/chat.png&#41;)
@@ -79,7 +81,9 @@ Production:
 
 # Spuštění projektu (doporučeno – přes Docker)
 
-### Requirements
+### Requirements Development (local)
+    pip install -r requrements.txt
+
 ###### Docker desktop
     docker --version
     docker compose version

@@ -82,7 +82,10 @@ přidané testy movies/tests
 git branch na conversation...
 .env add REDIS URL
 
-
+19.02.26
+requirements - odkazuje na requirements_dev
+update readme
+custom MovieQuerySet
 
 
 

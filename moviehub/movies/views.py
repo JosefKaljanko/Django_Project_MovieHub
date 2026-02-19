@@ -1,46 +1,58 @@
-from random import choice
+from .forms import MovieAddForm
+from .models import Movie, Genre
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.paginator import Paginator
+from django.db.models import Avg, Count, Value, FloatField  # avg count
 from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView
-from movies.models import Movie, Genre
+# from movies.models import Movie, Genre
+from random import choice
 from reviews.forms import AddReviewForm2
-from django.db.models import Avg, Count, Value, FloatField
-from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from reviews.models import Review
-from django.core.paginator import Paginator
-from .forms import MovieAddForm
 
 
-def get_top_movies(limit=10):
+def get_top_movies(limit=10, unrated=True):
     """Top 10 filmů podle průměrného ratingu (bez hodnocení = 0.0)"""
-    return (
-        Movie.objects
-        .annotate(avg_rating=Coalesce(Avg("reviews__rating"), Value(0.0), output_field=FloatField()))
-        .order_by("-avg_rating", "-id")[:limit]
-    )
+    # print("HERE: ",Movie.objects.with_avg_rating())
+    # print("HERE2: ",Movie.objects.values("title").annotate(avg_rating=Coalesce(Avg("reviews__rating"), Value(0.0), output_field=FloatField())).order_by("-avg_rating")[:limit])
+    # print("HERE3: ",Movie.objects.top_rated(include_unrated=True, limit=20).values("title","avg_rating"))
+    return Movie.objects.top_rated(limit=limit, include_unrated=unrated)
+
 
 
 class MovieListView(View):
-    """Zobrazí seznam vsech filmů."""
+    """Zobrazí seznam vsech filmů. (grid + pagination)"""
     def get(self, request):
         """
         Vrátí stranku se seznamem všechfilmů (grid + pagination).
         """
         q = request.GET.get("q", "").strip()
-        page_number = request.GET.get("page"
-                                      , 1)
-        movies_qs = (
-            Movie.objects.all()
-            .prefetch_related('genres')
-            .annotate(avg_rating=Avg('reviews__rating'))
-            .order_by('-id')
-        )
+        page_number = request.GET.get("page", 1)
 
-        if q:
-            movies_qs = movies_qs.filter(title__icontains=q)
+        movies_qs = (
+            Movie.objects   # Movie.objects.all()
+            .search(q)      # movies_qs.filter(title__icontains=q)
+            .prefetch_related("genres", "actors")
+            .with_avg_rating()
+            .order_default()
+        )
+        # movies_qs = Movie.objects.all()
+        # if q:
+        #     movies_qs = movies_qs.filter(title__icontains=q)
+
+        # movies_qs = (
+        #     movies_qs
+            # .prefetch_related('genres', 'actors')
+            # .annotate(avg_rating=Avg('reviews__rating'),
+            #           reviews_count=Count("reviews",distinct=True))
+            # .order_by('-id')
+        # )
+
+        print(movies_qs.values("title", "avg_rating","genres", "reviews_count"))
 
         paginator = Paginator(movies_qs, 9)
         page_obj = paginator.get_page(page_number)
@@ -52,9 +64,8 @@ class MovieListView(View):
             "paginator": paginator,
             "category_menu": category_menu,
             "q": q,
-            "top_movies": get_top_movies(10),
+            "top_movies": get_top_movies(limit=10),
         }
-        # return render(request, "movies/movie_list.html", {"movies": movies})
         return render(request, "movies/movie_list.html", context)
 
 
@@ -108,15 +119,12 @@ class GenreListView(View):
         """
         genres = (
             Genre.objects
-            .annotate(movie_count=Count("movies"))
+            .with_movie_count()
+            # .annotate(movie_count=Count("movies"))
             .order_by("-movie_count", "name")
         )
 
-        genres_with_mov = (
-            Genre.objects
-            .annotate(movie_count=Count("movies"))
-            .filter(movie_count__gt=0)
-        )
+        genres_with_mov = Genre.objects.with_movies_only()
 
         random_button = request.GET.get("random_genre")
         if random_button == "random" and genres_with_mov.exists():
@@ -142,7 +150,8 @@ class GenreDetailView(View):
 
         genres_list = (
             Genre.objects
-            .annotate(movie_count=Count("movies"))
+            .with_movie_count()
+            # .annotate(movie_count=Count("movies"))
             .order_by("-movie_count", "name")
         )
 

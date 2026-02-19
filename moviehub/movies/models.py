@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
+from .querysets import MovieQuerySet, GenreQuerySet
 
 
 class Genre(models.Model):
@@ -9,6 +10,7 @@ class Genre(models.Model):
     """
     name = models.CharField(max_length=70)
     slug = models.SlugField(unique=True, blank=True, max_length=100, db_index=True)
+    objects = GenreQuerySet.as_manager()
 
     def clean(self):
         """pokud není slug - vygeneruje"""
@@ -65,6 +67,7 @@ class Movie(models.Model):
     actors = models.ManyToManyField(Actor,related_name="movies")
     poster_image = models.ImageField(upload_to="movie_posters", blank=True, null=True)
     poster_url = models.URLField(blank=True, null=True)
+    objects = MovieQuerySet.as_manager()
 
     def clean(self):
         """není slug - vygeneruje"""
