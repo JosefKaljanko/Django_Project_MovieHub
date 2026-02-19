@@ -28,6 +28,8 @@ urlpatterns = [
     path("", include("reviews.urls")),
     path("chat/", include("chat.urls")),
 
+    path("api/", include("api.urls")),
+
 ]
 
 if settings.DEBUG:
